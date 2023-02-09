@@ -1,0 +1,26 @@
+DROP FUNCTION IF EXISTS public."TFncArtBeforeInsert"();
+
+CREATE OR REPLACE FUNCTION public."TFncArtBeforeInsert"()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
+	-- ------------------------------------------------------------------------------------------------------------------
+	-- Set the created date
+	IF NEW.DateCreated NULL 
+	THEN 
+		NEW.DateCreated = NOW();
+	END IF;
+	-- ------------------------------------------------------------------------------------------------------------------
+	-- Set the IdCode if is null
+	IF NEW.IDCode NULL THEN 
+		SELECT COALESCE(MAX("IDCode"),0) + 1 FROM public."ArtTDataElement" WHERE "ScopeIDn" = new.ScopeIDn;
+	END IF;
+RETURN NEW;
+END;
+$BODY$;
+
+ALTER FUNCTION public."TFncArtBeforeInsert"()
+    OWNER TO postgres;
