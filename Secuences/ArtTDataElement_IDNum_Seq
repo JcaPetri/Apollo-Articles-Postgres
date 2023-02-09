@@ -1,0 +1,14 @@
+DROP SEQUENCE IF EXISTS public."ArtTDataElement_IDNum_Seq";
+
+CREATE SEQUENCE IF NOT EXISTS public."ArtTDataElement_IDNum_Seq"
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+ALTER SEQUENCE public."ArtTDataElement_IDNum_Seq"
+    OWNER TO postgres;
+
+COMMENT ON SEQUENCE public."ArtTDataElement_IDNum_Seq"
+    IS 'The sequence ArtTDataElement_seq generate the nextval of the IDNum';
