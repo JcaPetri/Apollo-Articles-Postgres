@@ -1,0 +1,125 @@
+DROP TABLE IF EXISTS public."ArtTDataElement";
+
+CREATE TABLE IF NOT EXISTS public."ArtTDataElement"
+(
+    "IDNum" integer NOT NULL DEFAULT nextval('"ArtTDataElement_IDNum_seq"'::regclass),
+    "ID" uuid NOT NULL DEFAULT uuid_generate_v4(),
+    "IDName" character varying(250) COLLATE pg_catalog."default" NOT NULL,
+    "IDNameStructureIDn" integer NOT NULL,
+    "ScopeIDn" integer NOT NULL,
+    "CompanyIDn" integer NOT NULL,
+    "LanguageIDn" integer NOT NULL,
+    "IDCode" integer NOT NULL,
+    "DefinitionIDn" integer NOT NULL,
+    "InformationTypeIDn" integer NOT NULL,
+    "IDIsUsed" smallint NOT NULL,
+    "StateIDn" smallint NOT NULL,
+    "CreatedByIDn" integer NOT NULL,
+    "LastModifiedByIDn" integer NOT NULL,
+    "OwnerIDn" integer NOT NULL,
+    "DateCreated" date NOT NULL,
+    "DateTimeStamp" date NOT NULL DEFAULT now(),
+    "TableHistory" text COLLATE pg_catalog."default",
+    CONSTRAINT "Pk_IDNum" PRIMARY KEY ("IDNum"),
+    CONSTRAINT "Unique_ID" UNIQUE ("ID"),
+    CONSTRAINT "Unique_IDNameScopeCompLang" UNIQUE ("IDName", "ScopeIDn", "CompanyIDn", "LanguageIDn"),
+    CONSTRAINT "Unique_IDScopeIDCode" UNIQUE ("ScopeIDn", "IDCode")
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public."ArtTDataElement"
+    OWNER to postgres;
+
+COMMENT ON TABLE public."ArtTDataElement"
+    IS 'Es el diccionario del modulo Articulos. Este diccionario tiene definido un idioma por defecto.
+De esta manera mantenemos la integridad y no duplicidad de infomacion.
+Cada codigo ingresado se le genera un ID (uniqueidentifier) y un IDNum valor unico autonumerico.
+El resto de las tablas solo tienen el IDNum. Para determinar que significa un codigo, se debe consultar en esta tabla.
+Con el objetivo de que una misma palabra IDName pueda tener distintos significados segun su uso es que se define para un Scope.
+Para respetar todas las reglas el valor unico debe ser la combinacion de: Name/Scope/Company/Language
+es unico para un:
+  Name     -> (es el codigo legible por el usuario) 
+  Scope     -> (el Name debe ser unico para el ambito de aplicacion, usualmente una Tabla), vinculo con la tabla bpmfoutbaseelement unica para todas las bases de datos
+  Company -> (la Company), vinculo con la tabla bpmcore.bpmfoutbaseelement unica para todas las bases de datos
+  Language -> (el idioma predeterminado), vinculo con la tabla bpmfoutbaseelement unica para todas las bases de datos
+Importante: el objeto exite cuando es creado en la tabla respectiva, que este creado en el diccionario no afecta al sistema.
+Ej: se crea el articulo resma en el diccionario, pero no existe hasta que el mismo no es creado en la tabla Articles.';
+
+COMMENT ON COLUMN public."ArtTDataElement"."IDNum"
+    IS 'The IDNum is the autoincrement number';
+
+COMMENT ON COLUMN public."ArtTDataElement"."ID"
+    IS 'The ID is the uniqueidentifier auto generated V4';
+
+COMMENT ON COLUMN public."ArtTDataElement"."IDName"
+    IS 'The IDName is the user-readable code for the selected language.';
+
+COMMENT ON COLUMN public."ArtTDataElement"."IDNameStructureIDn"
+    IS 'The IDNameStructureIDn is the IDNum of the IDName structure, if the IDName is multivalued, here it refers to the structure.';
+
+COMMENT ON COLUMN public."ArtTDataElement"."ScopeIDn"
+    IS 'The ScopeIDn is the IdNum of the Scope, the Name must be unique for the scope of application, usually a Table';
+
+COMMENT ON COLUMN public."ArtTDataElement"."CompanyIDn"
+    IS 'The CompanyIDn is the IdNum of the Company to which the IDName is assigned';
+
+COMMENT ON COLUMN public."ArtTDataElement"."LanguageIDn"
+    IS 'The LanguageIDn is the IdNum of the language in which the Name is defined';
+
+COMMENT ON COLUMN public."ArtTDataElement"."IDCode"
+    IS 'The IDCode is the unique code of the record for a scope and company.';
+
+COMMENT ON COLUMN public."ArtTDataElement"."DefinitionIDn"
+    IS 'The DefinitionIDn is the IdNum of the element definition type.';
+
+COMMENT ON COLUMN public."ArtTDataElement"."InformationTypeIDn"
+    IS 'Then InformationTypeIDn is the IdNum of the type of information that the record represents.';
+
+COMMENT ON COLUMN public."ArtTDataElement"."IDIsUsed"
+    IS 'The IDIsUsed determines if the registry is used or not.';
+
+COMMENT ON COLUMN public."ArtTDataElement"."StateIDn"
+    IS 'The StatedIDn define if the record is enable or not.';
+
+COMMENT ON COLUMN public."ArtTDataElement"."CreatedByIDn"
+    IS 'The CreatedByIDn is the IdNum of the user who created the record.';
+
+COMMENT ON COLUMN public."ArtTDataElement"."LastModifiedByIDn"
+    IS 'The LastModifiedByIDn is the IdNum of the last user who modified the record.';
+
+COMMENT ON COLUMN public."ArtTDataElement"."OwnerIDn"
+    IS 'The OwnerIDn is the IdNum of the record owner.';
+
+COMMENT ON COLUMN public."ArtTDataElement"."DateCreated"
+    IS 'The DateCreated is the record creation date with UTC.';
+
+COMMENT ON COLUMN public."ArtTDataElement"."DateTimeStamp"
+    IS 'The DateTimeStamp is the date of the last modification of the record with UTC.';
+
+COMMENT ON COLUMN public."ArtTDataElement"."TableHistory"
+    IS 'The TableHistory contain then change history of each column.';
+COMMENT ON CONSTRAINT "Pk_IDNum" ON public."ArtTDataElement"
+    IS 'The sequence ArtTDataElement_seq generate the nextval';
+
+COMMENT ON CONSTRAINT "Unique_ID" ON public."ArtTDataElement"
+    IS 'Is the uniqueidentifier';
+COMMENT ON CONSTRAINT "Unique_IDNameScopeCompLang" ON public."ArtTDataElement"
+    IS 'A name can be unique for a ScopeId, for a CompanyId, and LanguageId.
+Thats mean, Pampa can be a brand or a thin, depend of its scope.';
+COMMENT ON CONSTRAINT "Unique_IDScopeIDCode" ON public."ArtTDataElement"
+    IS 'A CodeId can be unique for a ScopeId, for a CompanyId.
+Thats mean, you can''t duplicate the CodeId for one scope.';
+
+-- Trigger: TrgArtBeforeInsert
+
+-- DROP TRIGGER IF EXISTS "TrgArtBeforeInsert" ON public."ArtTDataElement";
+
+CREATE TRIGGER "TrgArtBeforeInsert"
+    AFTER INSERT
+    ON public."ArtTDataElement"
+    FOR EACH ROW
+    EXECUTE FUNCTION public."TFncArtBeforeInsert"();
+
+COMMENT ON TRIGGER "TrgArtBeforeInsert" ON public."ArtTDataElement"
+    IS 'Set the IdCode and the DateCreated';
