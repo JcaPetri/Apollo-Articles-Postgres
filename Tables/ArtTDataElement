@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS public."ArtTDataElement";
 
 CREATE TABLE IF NOT EXISTS public."ArtTDataElement"
 (
-    "IDNum" integer NOT NULL DEFAULT nextval('"ArtTDataElement_IDNum_seq"'::regclass),
+    "IDNum" integer NOT NULL DEFAULT nextval('"ArtTDataElement_IDNum_Seq"'::regclass),
     "ID" uuid NOT NULL DEFAULT uuid_generate_v4(),
     "IDName" character varying(250) COLLATE pg_catalog."default" NOT NULL,
     "IDNameStructureIDn" integer NOT NULL,
