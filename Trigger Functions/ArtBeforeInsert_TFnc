@@ -1,6 +1,6 @@
-DROP FUNCTION IF EXISTS public."TFncArtBeforeInsert"();
+DROP FUNCTION IF EXISTS public."ArtBeforeInsert_TFnc"();
 
-CREATE OR REPLACE FUNCTION public."TFncArtBeforeInsert"()
+CREATE OR REPLACE FUNCTION public."ArtBeforeInsert_TFnc"()
     RETURNS trigger
     LANGUAGE 'plpgsql'
     COST 100
@@ -22,5 +22,5 @@ RETURN NEW;
 END;
 $BODY$;
 
-ALTER FUNCTION public."TFncArtBeforeInsert"()
+ALTER FUNCTION public."ArtBeforeInsert_TFnc"()
     OWNER TO postgres;
