@@ -112,14 +112,13 @@ COMMENT ON CONSTRAINT "Unique_IDScopeIDCode" ON public."ArtTDataElement"
 Thats mean, you can''t duplicate the CodeId for one scope.';
 
 -- Trigger: TrgArtBeforeInsert
+DROP TRIGGER IF EXISTS "ArtBeforeInsert_Trg" ON public."ArtTDataElement";
 
--- DROP TRIGGER IF EXISTS "TrgArtBeforeInsert" ON public."ArtTDataElement";
-
-CREATE TRIGGER "TrgArtBeforeInsert"
+CREATE TRIGGER "ArtBeforeInsert_Trg"
     AFTER INSERT
     ON public."ArtTDataElement"
     FOR EACH ROW
-    EXECUTE FUNCTION public."TFncArtBeforeInsert"();
+    EXECUTE FUNCTION public."ArtBeforeInsert_tfnc"();
 
-COMMENT ON TRIGGER "TrgArtBeforeInsert" ON public."ArtTDataElement"
+COMMENT ON TRIGGER "ArtBeforeInsert_Trg" ON public."ArtTDataElement"
     IS 'Set the IdCode and the DateCreated';
