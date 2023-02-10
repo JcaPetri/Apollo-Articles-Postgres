@@ -1,5 +1,5 @@
+-- Table: public.ArtTDataElement
 DROP TABLE IF EXISTS public."ArtTDataElement";
-
 CREATE TABLE IF NOT EXISTS public."ArtTDataElement"
 (
     "IDNum" integer NOT NULL DEFAULT nextval('"ArtTDataElement_IDNum_Seq"'::regclass),
@@ -17,8 +17,8 @@ CREATE TABLE IF NOT EXISTS public."ArtTDataElement"
     "CreatedByIDn" integer NOT NULL,
     "LastModifiedByIDn" integer NOT NULL,
     "OwnerIDn" integer NOT NULL,
-    "DateCreated" date NOT NULL,
-    "DateTimeStamp" date NOT NULL DEFAULT now(),
+    "DateCreated" timestamp without time zone NOT NULL,
+    "DateTimeStamp" timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "TableHistory" text COLLATE pg_catalog."default",
     CONSTRAINT "Pk_IDNum" PRIMARY KEY ("IDNum"),
     CONSTRAINT "Unique_ID" UNIQUE ("ID"),
@@ -111,14 +111,24 @@ COMMENT ON CONSTRAINT "Unique_IDScopeIDCode" ON public."ArtTDataElement"
     IS 'A CodeId can be unique for a ScopeId, for a CompanyId.
 Thats mean, you can''t duplicate the CodeId for one scope.';
 
--- Trigger: TrgArtBeforeInsert
+-- Trigger: ArtBeforeInsert_Trg
 DROP TRIGGER IF EXISTS "ArtBeforeInsert_Trg" ON public."ArtTDataElement";
-
 CREATE TRIGGER "ArtBeforeInsert_Trg"
-    AFTER INSERT
+    BEFORE INSERT
     ON public."ArtTDataElement"
     FOR EACH ROW
     EXECUTE FUNCTION public."ArtBeforeInsert_tfnc"();
 
 COMMENT ON TRIGGER "ArtBeforeInsert_Trg" ON public."ArtTDataElement"
-    IS 'Set the IdCode and the DateCreated';
+    IS 'Set the IDCode and the DateCreated';
+
+-- Trigger: ArtBeforeUpdate_Trg
+DROP TRIGGER IF EXISTS "ArtBeforeUpdate_Trg" ON public."ArtTDataElement";
+CREATE TRIGGER "ArtBeforeUpdate_Trg"
+    BEFORE UPDATE 
+    ON public."ArtTDataElement"
+    FOR EACH ROW
+    EXECUTE FUNCTION public."ArtBeforeUpdate_tfnc"();
+
+COMMENT ON TRIGGER "ArtBeforeUpdate_Trg" ON public."ArtTDataElement"
+    IS 'Set the History field';
