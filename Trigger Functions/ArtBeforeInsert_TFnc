@@ -1,6 +1,6 @@
-DROP FUNCTION IF EXISTS public."ArtBeforeInsert_TFnc"();
-
-CREATE OR REPLACE FUNCTION public."ArtBeforeInsert_TFnc"()
+-- FUNCTION: public.ArtBeforeInsert_tfnc()
+DROP FUNCTION IF EXISTS public."ArtBeforeInsert_tfnc"();
+CREATE OR REPLACE FUNCTION public."ArtBeforeInsert_tfnc"()
     RETURNS trigger
     LANGUAGE 'plpgsql'
     COST 100
@@ -9,18 +9,17 @@ AS $BODY$
 BEGIN
 	-- ------------------------------------------------------------------------------------------------------------------
 	-- Set the created date
-	IF NEW.DateCreated NULL 
-	THEN 
-		NEW.DateCreated = NOW();
+	IF NEW."DateCreated" IS NULL THEN 
+		NEW."DateCreated" := CURRENT_TIMESTAMP;
 	END IF;
 	-- ------------------------------------------------------------------------------------------------------------------
 	-- Set the IdCode if is null
-	IF NEW.IDCode NULL THEN 
-		SELECT COALESCE(MAX("IDCode"),0) + 1 FROM public."ArtTDataElement" WHERE "ScopeIDn" = new.ScopeIDn;
+	IF NEW."IDCode" IS NULL THEN 
+		NEW."IDCode" := (SELECT COALESCE(MAX("IDCode"),0) + 1 FROM public."ArtTDataElement" WHERE "ScopeIDn" = NEW."ScopeIDn");
 	END IF;
 RETURN NEW;
 END;
 $BODY$;
 
-ALTER FUNCTION public."ArtBeforeInsert_TFnc"()
+ALTER FUNCTION public."ArtBeforeInsert_tfnc"()
     OWNER TO postgres;
