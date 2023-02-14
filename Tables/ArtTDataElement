@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS public."ArtTDataElement"
     "IDName" character varying(250) COLLATE pg_catalog."default" NOT NULL,
     "IDNameStructureIDn" integer NOT NULL,
     "ScopeIDn" integer NOT NULL,
-    "CompanyIDn" integer NOT NULL,
+    "BusinessUnitIDn" integer NOT NULL,
     "LanguageIDn" integer NOT NULL,
     "IDCode" integer NOT NULL,
     "DefinitionIDn" integer NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS public."ArtTDataElement"
     "TableHistory" text COLLATE pg_catalog."default",
     CONSTRAINT "Pk_IDNum" PRIMARY KEY ("IDNum"),
     CONSTRAINT "Unique_ID" UNIQUE ("ID"),
-    CONSTRAINT "Unique_IDNameScopeCompLang" UNIQUE ("IDName", "ScopeIDn", "CompanyIDn", "LanguageIDn"),
+    CONSTRAINT "Unique_IDNameScopeCompLang" UNIQUE ("IDName", "ScopeIDn", "BusinessUnitIDn", "LanguageIDn"),
     CONSTRAINT "Unique_IDScopeIDCode" UNIQUE ("ScopeIDn", "IDCode")
 )
 
@@ -32,19 +32,18 @@ ALTER TABLE IF EXISTS public."ArtTDataElement"
     OWNER to postgres;
 
 COMMENT ON TABLE public."ArtTDataElement"
-    IS 'Es el diccionario del modulo Articulos. Este diccionario tiene definido un idioma por defecto.
-De esta manera mantenemos la integridad y no duplicidad de infomacion.
-Cada codigo ingresado se le genera un ID (uniqueidentifier) y un IDNum valor unico autonumerico.
-El resto de las tablas solo tienen el IDNum. Para determinar que significa un codigo, se debe consultar en esta tabla.
-Con el objetivo de que una misma palabra IDName pueda tener distintos significados segun su uso es que se define para un Scope.
-Para respetar todas las reglas el valor unico debe ser la combinacion de: Name/Scope/Company/Language
-es unico para un:
-  Name     -> (es el codigo legible por el usuario) 
-  Scope     -> (el Name debe ser unico para el ambito de aplicacion, usualmente una Tabla), vinculo con la tabla bpmfoutbaseelement unica para todas las bases de datos
-  Company -> (la Company), vinculo con la tabla bpmcore.bpmfoutbaseelement unica para todas las bases de datos
-  Language -> (el idioma predeterminado), vinculo con la tabla bpmfoutbaseelement unica para todas las bases de datos
-Importante: el objeto exite cuando es creado en la tabla respectiva, que este creado en el diccionario no afecta al sistema.
-Ej: se crea el articulo resma en el diccionario, pero no existe hasta que el mismo no es creado en la tabla Articles.';
+    IS 'ArtTDataElement is the dictionary of the Articles module. This dictionary has a default language defined. In this way we maintain the integrity and non-duplication of information.
+Each code entered generates an ID (uniqueidentifier) ​​and an IDNum unique autonumerical value.
+The rest of the tables only have the IDNum. To determine what a code means, you should consult this table.
+In order for the same IDName word to have different meanings depending on its use, it is defined for a Scope and BusinessUnit.
+To respect all the rules the unique value must be the combination of: Name/Scope/BusinessUnit/Language.
+is unique for a:
+  Name -> is the code readable by the user
+  Scope -> the Name must be unique for the application scope, usually a Table.
+  BusinessUnit -> the Name must be unique for the scope and Business Unit.
+  Language -> the Name language must be unique for the scope, business Unit and language.
+Important: the object exists when it is created in the respective table, that it, is created in the dictionary does not affect the system.
+Example: the pampa article is created in the dictionary, but it does not exist until it is created in the Articles table.';
 
 COMMENT ON COLUMN public."ArtTDataElement"."IDNum"
     IS 'The IDNum is the autoincrement number';
@@ -61,8 +60,8 @@ COMMENT ON COLUMN public."ArtTDataElement"."IDNameStructureIDn"
 COMMENT ON COLUMN public."ArtTDataElement"."ScopeIDn"
     IS 'The ScopeIDn is the IdNum of the Scope, the Name must be unique for the scope of application, usually a Table';
 
-COMMENT ON COLUMN public."ArtTDataElement"."CompanyIDn"
-    IS 'The CompanyIDn is the IdNum of the Company to which the IDName is assigned';
+COMMENT ON COLUMN public."ArtTDataElement"."BusinessUnitIDn"
+    IS 'The BusinessUnitIDn is the IdNum of the Business Unit of the Company to which the IDName is assigned';
 
 COMMENT ON COLUMN public."ArtTDataElement"."LanguageIDn"
     IS 'The LanguageIDn is the IdNum of the language in which the Name is defined';
@@ -124,6 +123,7 @@ COMMENT ON TRIGGER "ArtBeforeInsert_Trg" ON public."ArtTDataElement"
 
 -- Trigger: ArtBeforeUpdate_Trg
 DROP TRIGGER IF EXISTS "ArtBeforeUpdate_Trg" ON public."ArtTDataElement";
+
 CREATE TRIGGER "ArtBeforeUpdate_Trg"
     BEFORE UPDATE 
     ON public."ArtTDataElement"
