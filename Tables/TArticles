@@ -1,0 +1,139 @@
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- First create the Table
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Table: public.ArtTArticles
+DROP TABLE IF EXISTS public."ArtTArticles";
+
+CREATE TABLE IF NOT EXISTS public."ArtTArticles"
+(
+    "ArticleIDn" integer NOT NULL,
+    "BusinessUnitIDn" integer NOT NULL,
+    "BarCode" character varying(250) COLLATE pg_catalog."default",
+    "ArticleGeneralIDn" integer NOT NULL,
+    "StockEnable" smallint NOT NULL,
+    "StateIDn" smallint NOT NULL,
+    "CreatedByIDn" integer NOT NULL,
+    "LastModifiedByIDn" integer NOT NULL,
+    "OwnerIDn" integer NOT NULL,
+    "DateCreated" timestamp without time zone NOT NULL,
+    "DateTimeStamp" timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "TableHistory" text COLLATE pg_catalog."default",
+    CONSTRAINT "Pk_ArticleIDn" PRIMARY KEY ("ArticleIDn"),
+    CONSTRAINT "Unique_IDArticleBusinessUnit" UNIQUE ("ArticleIDn", "BusinessUnitIDn"),
+    CONSTRAINT "Unique_BarCodeIDBusinessUnit" UNIQUE ("BarCode", "BusinessUnitIDn")
+    CONSTRAINT "ArticleIDnArt" FOREIGN KEY ("ArticleIDn")
+        REFERENCES public."ArtTDataElement" ("IDNum") MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public."ArtTArticles"
+    OWNER to postgres;
+
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Second create the Function before insert
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- FUNCTION: public.ArticlesBeforeInsert_Tfnc()
+DROP FUNCTION IF EXISTS public."ArticlesBeforeInsert_Tfnc"();
+
+CREATE OR REPLACE FUNCTION public."ArticlesBeforeInsert_Tfnc"()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
+	-- ------------------------------------------------------------------------------------------------------------------
+	-- Set the created date
+	IF NEW."DateCreated" IS NULL THEN 
+		NEW."DateCreated" := CURRENT_TIMESTAMP;
+	END IF;
+RETURN NEW;
+END;
+$BODY$;
+
+ALTER FUNCTION public."ArticlesBeforeInsert_Tfnc"()
+    OWNER TO postgres;
+
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Thirt create the trigger Before insert in the Article table
+-- Trigger: ArticlesBeforeInsert_Trg
+DROP TRIGGER IF EXISTS "ArticlesBeforeInsert_Trg" ON public."ArtTArticles";
+
+CREATE TRIGGER "ArticlesBeforeInsert_Trg"
+    BEFORE INSERT
+    ON public."ArtTArticles"
+    FOR EACH ROW
+    EXECUTE FUNCTION public."ArticlesBeforeInsert_Tfnc"();
+
+COMMENT ON TRIGGER "ArticlesBeforeInsert_Trg" ON public."ArtTArticles"
+    IS 'Set the DateCreated';
+
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Fourth create the Function before update
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- FUNCTION: public.ArticlesBeforeUpdate_Tfnc()
+DROP FUNCTION IF EXISTS public."ArticlesBeforeUpdate_Tfnc"();
+
+CREATE OR REPLACE FUNCTION public."ArticlesBeforeUpdate_Tfnc"()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+DECLARE
+	v_TableHistory text;
+	v_TableHistoryOld text;
+BEGIN
+	-- ------------------------------------------------------------------------------------------------------------------
+	-- Set the DateTimeStamp
+	NEW."DateTimeStamp" := CURRENT_TIMESTAMP;
+	-- ------------------------------------------------------------------------------------------------------------------
+	-- Set the created date
+	IF NEW."TableHistory" = 'SetNull' THEN 
+		NEW."TableHistory" := NULL;
+	ELSEIF NEW."TableHistory" = 'SetOff' THEN
+		NEW."TableHistory" := OLD."TableHistory";
+	ELSE
+		v_TableHistoryOld := OLD."TableHistory";
+		v_TableHistory = '';
+		IF NEW."BusinessUnitIDn" <> OLD."BusinessUnitIDn" THEN v_TableHistory := OLD."BusinessUnitIDn"; ELSE v_TableHistory := '†'; END IF;
+		IF NEW."BarCode" <> OLD."BarCode" THEN v_TableHistory := OLD."BarCode"; ELSE v_TableHistory := '†'; END IF;
+		IF NEW."ArticleGeneralIDn" <> OLD."ArticleGeneralIDn" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."ArticleGeneralIDn"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
+		IF NEW."StockEnable" <> OLD."StockEnable" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."StockEnable"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
+		IF NEW."StateIDn" <> OLD."StateIDn" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."StateIDn"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
+		IF NEW."CreatedByIDn" <> OLD."CreatedByIDn" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."CreatedByIDn"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
+		IF NEW."LastModifiedByIDn" <> OLD."LastModifiedByIDn" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."LastModifiedByIDn"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
+		IF NEW."OwnerIDn" <> OLD."OwnerIDn" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."OwnerIDn"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
+		IF v_TableHistoryOld IS NULL THEN v_TableHistory := CONCAT(v_TableHistory,'†',NEW."DateCreated"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
+		IF NEW."DateTimeStamp" <> OLD."DateTimeStamp" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."DateTimeStamp"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
+		IF v_TableHistoryOld IS NULL THEN
+			NEW."TableHistory" := v_TableHistory;
+		ELSE
+			NEW."TableHistory" := CONCAT(v_TableHistory,'‡',v_TableHistoryOld);
+		END IF;
+		
+	END IF;
+	RETURN NEW;
+END;
+$BODY$;
+
+ALTER FUNCTION public."ArticlesBeforeUpdate_Tfnc"()
+    OWNER TO postgres;
+
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Fifth create the trigger Before update in the Article table
+-- Trigger: ArticlesBeforeUpdate_Trg
+DROP TRIGGER IF EXISTS "ArticlesBeforeUpdate_Trg" ON public."ArtTArticles";
+
+CREATE TRIGGER "ArticlesBeforeUpdate_Trg"
+    BEFORE UPDATE 
+    ON public."ArtTArticles"
+    FOR EACH ROW
+    EXECUTE FUNCTION public."ArticlesBeforeUpdate_Tfnc"();
+
+COMMENT ON TRIGGER "ArticlesBeforeUpdate_Trg" ON public."ArtTArticles"
+    IS 'Set the History field';
