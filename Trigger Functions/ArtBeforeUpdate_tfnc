@@ -1,3 +1,12 @@
+-- FUNCTION: public.ArtBeforeUpdate_tfnc()
+DROP FUNCTION IF EXISTS public."ArtBeforeUpdate_tfnc"();
+
+CREATE OR REPLACE FUNCTION public."ArtBeforeUpdate_tfnc"()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
 DECLARE
 	v_TableHistory text;
 	v_TableHistoryOld text;
@@ -20,7 +29,7 @@ BEGIN
 		IF NEW."IDName" <> OLD."IDName" THEN v_TableHistory := OLD."IDName"; ELSE v_TableHistory := '†'; END IF;
 		IF NEW."IDNameStructureIDn" <> OLD."IDNameStructureIDn" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."IDNameStructureIDn"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
 		IF NEW."ScopeIDn" <> OLD."ScopeIDn" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."ScopeIDn"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
-		IF NEW."CompanyIDn" <> OLD."CompanyIDn" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."CompanyIDn"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
+		IF NEW."BusinessUnitIDn" <> OLD."BusinessUnitIDn" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."BusinessUnitIDn"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
 		IF NEW."LanguageIDn" <> OLD."LanguageIDn" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."LanguageIDn"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
 		IF NEW."IDCode" <> OLD."IDCode" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."IDCode"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
 		IF NEW."DefinitionIDn" <> OLD."DefinitionIDn" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."DefinitionIDn"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
@@ -41,3 +50,7 @@ BEGIN
 	END IF;
 	RETURN NEW;
 END;
+$BODY$;
+
+ALTER FUNCTION public."ArtBeforeUpdate_tfnc"()
+    OWNER TO postgres;
