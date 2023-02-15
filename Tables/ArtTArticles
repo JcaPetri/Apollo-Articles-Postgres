@@ -9,7 +9,7 @@
 -- First create the Table
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Table: public.ArtTArticles
-DROP TABLE IF EXISTS public."ArtTArticles";
+DROP TABLE IF EXISTS public."ArtTArticles" CASCADE;
 
 CREATE TABLE IF NOT EXISTS public."ArtTArticles"
 (
@@ -97,7 +97,7 @@ COMMENT ON CONSTRAINT "Unique_BarCodeIDBusinessUnit" ON public."ArtTArticles"
 --	Step 1: create the function before insert
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: public.ArticlesBeforeInsert_Tfnc()
-DROP FUNCTION IF EXISTS public."ArticlesBeforeInsert_Tfnc"();
+DROP FUNCTION IF EXISTS public."ArticlesBeforeInsert_Tfnc"() CASCADE;
 
 CREATE OR REPLACE FUNCTION public."ArticlesBeforeInsert_Tfnc"()
     RETURNS trigger
@@ -125,7 +125,7 @@ COMMENT ON FUNCTION public."ArticlesBeforeInsert_Tfnc"()
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --	Step 2: create the trigger before insert in the Articles table
 -- Trigger: ArticlesBeforeInsert_Trg
-DROP TRIGGER IF EXISTS "ArticlesBeforeInsert_Trg" ON public."ArtTArticles";
+DROP TRIGGER IF EXISTS "ArticlesBeforeInsert_Trg" ON public."ArtTArticles" CASCADE;
 
 CREATE TRIGGER "ArticlesBeforeInsert_Trg"
     BEFORE INSERT
@@ -141,7 +141,7 @@ COMMENT ON TRIGGER "ArticlesBeforeInsert_Trg" ON public."ArtTArticles"
 --	Step 1: create the function before update
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: public.ArticlesBeforeUpdate_Tfnc()
-DROP FUNCTION IF EXISTS public."ArticlesBeforeUpdate_Tfnc"();
+DROP FUNCTION IF EXISTS public."ArticlesBeforeUpdate_Tfnc"() CASCADE;
 
 CREATE OR REPLACE FUNCTION public."ArticlesBeforeUpdate_Tfnc"()
     RETURNS trigger
@@ -196,7 +196,7 @@ COMMENT ON FUNCTION public."ArticlesBeforeUpdate_Tfnc"()
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --	Step 2: create the trigger before update in the Articles table
 -- Trigger: ArticlesBeforeUpdate_Trg
-DROP TRIGGER IF EXISTS "ArticlesBeforeUpdate_Trg" ON public."ArtTArticles";
+DROP TRIGGER IF EXISTS "ArticlesBeforeUpdate_Trg" ON public."ArtTArticles" CASCADE;
 
 CREATE TRIGGER "ArticlesBeforeUpdate_Trg"
     BEFORE UPDATE 
