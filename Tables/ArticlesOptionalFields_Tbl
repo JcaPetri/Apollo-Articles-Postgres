@@ -233,7 +233,7 @@ DROP TRIGGER IF EXISTS "ArticlesOptionalFieldsBeforeUpdate_Trg" ON public."Artic
 
 CREATE TRIGGER "ArticlesOptionalFieldsBeforeUpdate_Trg"
     BEFORE UPDATE 
-    ON public."ArticlesOptionalFieldsOptionalFields_Tbl"
+    ON public."ArticlesOptionalFields_Tbl"
     FOR EACH ROW
     EXECUTE FUNCTION public."ArticlesOptionalFieldsBeforeUpdate_Tfnc"();
 
