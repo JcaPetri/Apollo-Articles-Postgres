@@ -3,29 +3,26 @@
 -- After you create all tables, it is necesary create the relations of each others
 
 -- #########################################################################################################################################################################################
--- Join ArtArticles_Tbl and ArtDataElement_Tbl
+-- Join Articles_Tbl and ArtDataElement_Tbl
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Table: public."ArtTArticles_Tbl"
-ALTER TABLE IF EXISTS public."ArtArticles_Tbl"
+-- Table: public."TArticles_Tbl"
+    ALTER TABLE IF EXISTS public."Articles_Tbl"
     ADD CONSTRAINT "ArtArticleIDn" FOREIGN KEY ("ArticleIDn")
     REFERENCES public."ArtDataElement_Tbl" ("IDNum") MATCH SIMPLE
     ON UPDATE CASCADE
     ON DELETE CASCADE
     NOT VALID;
 
-COMMENT ON CONSTRAINT "ArticleIDnArt" ON public."ArtArticles_Tbl"
+COMMENT ON CONSTRAINT "ArtArticleIDn" ON public."Articles_Tbl"
     IS 'Join with the Dictionary table ArtDataElement IDNum field.';
 
-
-CONSTRAINT `ArticleIDnAfo` FOREIGN KEY (`ArticleIDn`) REFERENCES `applcore`.`appllogtarticles` (`ArticleIDn`) ON DELETE CASCADE ON UPDATE CASCADE,
-         
 -- #########################################################################################################################################################################################
--- Join ArtOptionalFields_Tbl and ArtArticles_Tbl
+-- Join ArtOptionalFields_Tbl and Articles_Tbl
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Table: public."ArtOptionalFields_Tbl"
-ALTER TABLE IF EXISTS public."ArtOptionalFields_Tbl"
+    ALTER TABLE IF EXISTS public."ArtOptionalFields_Tbl"
     ADD CONSTRAINT "AofArticleIDn" FOREIGN KEY ("ArticleIDn")
-    REFERENCES public."ArtArticles_Tbl" ("ArticleIDn") MATCH SIMPLE
+    REFERENCES public."Articles_Tbl" ("ArticleIDn") MATCH SIMPLE
     ON UPDATE CASCADE
     ON DELETE CASCADE
     NOT VALID;
