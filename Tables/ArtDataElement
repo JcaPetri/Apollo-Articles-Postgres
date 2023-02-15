@@ -65,10 +65,10 @@ CREATE TABLE public."ArtDataElement_Tbl"
     "DateCreated" timestamp without time zone NOT NULL,
     "DateTimeStamp" timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "TableHistory" text,
-    CONSTRAINT "Pk_IDNum" PRIMARY KEY ("IDNum"),
-    CONSTRAINT "Unique_ID" UNIQUE ("ID"),
-	CONSTRAINT "Unique_IDNameScopeCompLang" UNIQUE ("IDName", "ScopeIDn", "CompanyIDn", "LanguageIDn"),
-    CONSTRAINT "Unique_IDScopeIDCode" UNIQUE ("ScopeIDn", "IDCode")
+    CONSTRAINT "AdePk_IDNum" PRIMARY KEY ("IDNum"),
+    CONSTRAINT "AdeUnique_ID" UNIQUE ("ID"),
+    CONSTRAINT "AdeUnique_IDNameScopeCompLang" UNIQUE ("IDName", "ScopeIDn", "CompanyIDn", "LanguageIDn"),
+    CONSTRAINT "AdeUnique_IDScopeIDCode" UNIQUE ("ScopeIDn", "IDCode")
 );
 
 ALTER TABLE IF EXISTS public."ArtDataElement_Tbl"
@@ -147,17 +147,20 @@ COMMENT ON COLUMN public."ArtDataElement_Tbl"."DateTimeStamp"
 COMMENT ON COLUMN public."ArtDataElement_Tbl"."TableHistory"
     IS 'The TableHistory contain then change history of each column.';
 
-COMMENT ON CONSTRAINT "Pk_IDNum" ON public."ArtDataElement_Tbl"
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Create the comments of the constraint elements
+-- 
+COMMENT ON CONSTRAINT "AdePk_IDNum" ON public."ArtDataElement_Tbl"
     IS 'The sequence ArtDataElement_Tbl_seq generate the nextval';
 
-COMMENT ON CONSTRAINT "Unique_ID" ON public."ArtDataElement_Tbl"
+COMMENT ON CONSTRAINT "AdeUnique_ID" ON public."ArtDataElement_Tbl"
     IS 'Is the uniqueidentifier';
 
-COMMENT ON CONSTRAINT "Unique_IDNameScopeCompLang" ON public."ArtDataElement_Tbl"
+COMMENT ON CONSTRAINT "AdeUnique_IDNameScopeCompLang" ON public."ArtDataElement_Tbl"
     IS 'A name can be unique for a ScopeId, for a CompanyId, and LanguageId.
 Thats mean, Pampa can be a brand or a thin, depend of its scope.';
 
-COMMENT ON CONSTRAINT "Unique_IDScopeIDCode" ON public."ArtDataElement_Tbl"
+COMMENT ON CONSTRAINT "AdeUnique_IDScopeIDCode" ON public."ArtDataElement_Tbl"
     IS 'A CodeId can be unique for a ScopeId, for a CompanyId.
 Thats mean, you can''t duplicate the CodeId for one scope.';
 
