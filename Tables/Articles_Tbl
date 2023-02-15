@@ -1,5 +1,5 @@
 -- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
--- Create the ArtTArticles_Tbl table
+-- Create the Articles_Tbl table
 -- Contains the articles information. 
 -- The articles exists since you create them in this table. 
 -- It's information, of what are they, are in the DataElement table.
@@ -8,10 +8,10 @@
 -- #########################################################################################################################################################################################
 -- First create the Table
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Table: public.ArtTArticles_Tbl
-DROP TABLE IF EXISTS public."ArtTArticles_Tbl" CASCADE;
+-- Table: public.Articles_Tbl
+DROP TABLE IF EXISTS public."Articles_Tbl" CASCADE;
 
-CREATE TABLE IF NOT EXISTS public."ArtTArticles_Tbl"
+CREATE TABLE IF NOT EXISTS public."Articles_Tbl"
 (
     "ArticleIDn" integer NOT NULL,
     "BusinessUnitIDn" integer NOT NULL,
@@ -32,63 +32,63 @@ CREATE TABLE IF NOT EXISTS public."ArtTArticles_Tbl"
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public."ArtTArticles_Tbl"
+ALTER TABLE IF EXISTS public."Articles_Tbl"
     OWNER to postgres;
 
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Create the comments of the table fields elements
 -- 
-COMMENT ON TABLE public."ArtTArticles_Tbl"
+COMMENT ON TABLE public."Articles_Tbl"
     IS 'Contains the articles information. 
 	The articles exists since you create them in this table. It´s information, of what are they, are in the DataElement table.
 	The primary key is articleIDn field and must be unique for each business unit.';
 
-COMMENT ON COLUMN public."ArtTArticles_Tbl"."ArticleIDn"
+COMMENT ON COLUMN public."Articles_Tbl"."ArticleIDn"
     IS 'The ArticleIDn is the IDNum of the article. Link with the diccionary table - ArtTDataElement.';
 
-COMMENT ON COLUMN public."ArtTArticles_Tbl"."BusinessUnitIDn"
+COMMENT ON COLUMN public."Articles_Tbl"."BusinessUnitIDn"
     IS 'The BusinessUnitIDn is the business unit that the articles belong.';
 
-COMMENT ON COLUMN public."ArtTArticles_Tbl"."BarCode"
+COMMENT ON COLUMN public."Articles_Tbl"."BarCode"
     IS 'The BarCode is lookup code, thats can be the barcode or a custom code.';
 
-COMMENT ON COLUMN public."ArtTArticles_Tbl"."ArticleGeneralIDn"
+COMMENT ON COLUMN public."Articles_Tbl"."ArticleGeneralIDn"
     IS 'The ArticleGeneralIDn join with the ArticlesGeneral IDNum table. Link with the articles generals properties.';
 
-COMMENT ON COLUMN public."ArtTArticles_Tbl"."StockEnable"
+COMMENT ON COLUMN public."Articles_Tbl"."StockEnable"
     IS 'The StockEnable is a boolean value, false = 0 / true = 1. The article allows stock.';
 
-COMMENT ON COLUMN public."ArtTArticles_Tbl"."StateIDn"
+COMMENT ON COLUMN public."Articles_Tbl"."StateIDn"
     IS 'The StatedIDn is the IDNum that define if the record is enable or not.';
 
-COMMENT ON COLUMN public."ArtTArticles_Tbl"."CreatedByIDn"
+COMMENT ON COLUMN public."Articles_Tbl"."CreatedByIDn"
     IS 'The CreatedByIDn is the IDNum of the user who created the record.';
 
-COMMENT ON COLUMN public."ArtTArticles_Tbl"."LastModifiedByIDn"
+COMMENT ON COLUMN public."Articles_Tbl"."LastModifiedByIDn"
     IS 'The LastModifiedByIDn is the IDNum of the last user who modified the record.';
 
-COMMENT ON COLUMN public."ArtTArticles_Tbl"."OwnerIDn"
+COMMENT ON COLUMN public."Articles_Tbl"."OwnerIDn"
     IS 'The OwnerIDn is the IDNum of the record owner.';
 
-COMMENT ON COLUMN public."ArtTArticles_Tbl"."DateCreated"
+COMMENT ON COLUMN public."Articles_Tbl"."DateCreated"
     IS 'The DateCreated is the record creation datetime UTC.';
 
-COMMENT ON COLUMN public."ArtTArticles_Tbl"."DateTimeStamp"
+COMMENT ON COLUMN public."Articles_Tbl"."DateTimeStamp"
     IS 'The DateTimeStamp is the datetime UTC of the last modification.';
 
-COMMENT ON COLUMN public."ArtTArticles_Tbl"."TableHistory"
+COMMENT ON COLUMN public."Articles_Tbl"."TableHistory"
     IS 'The TableHistory contain then change history of each column.';
 
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Create the comments of the constraint elements
 -- 
-COMMENT ON CONSTRAINT "ArtPk_ArticleIDn" ON public."ArtTArticles_Tbl"
+COMMENT ON CONSTRAINT "ArtPk_ArticleIDn" ON public."Articles_Tbl"
     IS 'The ArticleIDn came from the ArtTDataElement, thats is a integer generated value.';
 
-COMMENT ON CONSTRAINT "ArtUnique_IDArticleBusinessUnit" ON public."ArtTArticles_Tbl"
+COMMENT ON CONSTRAINT "ArtUnique_IDArticleBusinessUnit" ON public."Articles_Tbl"
     IS 'An article can be unique for a business unit.';
 
-COMMENT ON CONSTRAINT "ArtUnique_BarCodeIDBusinessUnit" ON public."ArtTArticles_Tbl"
+COMMENT ON CONSTRAINT "ArtUnique_BarCodeIDBusinessUnit" ON public."Articles_Tbl"
     IS 'An barcode can be unique for a business unit.';
 
 
@@ -125,15 +125,15 @@ COMMENT ON FUNCTION public."ArticlesBeforeInsert_Tfnc"()
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --	Step 2: create the trigger before insert in the Articles table
 -- Trigger: ArticlesBeforeInsert_Trg
-DROP TRIGGER IF EXISTS "ArticlesBeforeInsert_Trg" ON public."ArtTArticles_Tbl" CASCADE;
+DROP TRIGGER IF EXISTS "ArticlesBeforeInsert_Trg" ON public."Articles_Tbl" CASCADE;
 
 CREATE TRIGGER "ArticlesBeforeInsert_Trg"
     BEFORE INSERT
-    ON public."ArtTArticles_Tbl"
+    ON public."Articles_Tbl"
     FOR EACH ROW
     EXECUTE FUNCTION public."ArticlesBeforeInsert_Tfnc"();
 
-COMMENT ON TRIGGER "ArticlesBeforeInsert_Trg" ON public."ArtTArticles_Tbl"
+COMMENT ON TRIGGER "ArticlesBeforeInsert_Trg" ON public."Articles_Tbl"
     IS 'Set the datetime UTC of the DateCreated field';
 
 -- #########################################################################################################################################################################################
@@ -196,13 +196,13 @@ COMMENT ON FUNCTION public."ArticlesBeforeUpdate_Tfnc"()
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --	Step 2: create the trigger before update in the Articles table
 -- Trigger: ArticlesBeforeUpdate_Trg
-DROP TRIGGER IF EXISTS "ArticlesBeforeUpdate_Trg" ON public."ArtTArticles_Tbl" CASCADE;
+DROP TRIGGER IF EXISTS "ArticlesBeforeUpdate_Trg" ON public."Articles_Tbl" CASCADE;
 
 CREATE TRIGGER "ArticlesBeforeUpdate_Trg"
     BEFORE UPDATE 
-    ON public."ArtTArticles_Tbl"
+    ON public."Articles_Tbl"
     FOR EACH ROW
     EXECUTE FUNCTION public."ArticlesBeforeUpdate_Tfnc"();
 
-COMMENT ON TRIGGER "ArticlesBeforeUpdate_Trg" ON public."ArtTArticles_Tbl"
+COMMENT ON TRIGGER "ArticlesBeforeUpdate_Trg" ON public."Articles_Tbl"
     IS 'Set the datetime UTC and the record History.';
