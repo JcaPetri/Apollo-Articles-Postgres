@@ -1,0 +1,241 @@
+-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+-- Create the ArticlesOptionalFields_Tbl table
+-- Contains the columns/fields/properties of the ArtArticles_Tbl which are optionals.
+-- The primary key: are the union of the columns TableFieldIDn + ArticleIDn  + BusinessUnitIDn
+-- The unique key: are the union of the columns TableFieldIDn + ArticleIDn  + BusinessUnitIDn
+
+-- #########################################################################################################################################################################################
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- First create the sequence ArticlesOptionalFields_seq
+-- 
+DROP SEQUENCE IF EXISTS public."ArticlesOptionalFields_Seq" CASCADE;
+
+CREATE SEQUENCE public."ArticlesOptionalFields_Seq"
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+ALTER SEQUENCE public."ArticlesOptionalFields_Seq"
+    OWNER TO postgres;
+
+COMMENT ON SEQUENCE public."ArticlesOptionalFields_Seq"
+    IS 'The sequence ArticlesOptionalFields_seq generate the nextval of the IDNum';
+
+
+-- #########################################################################################################################################################################################
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Second create the ArticlesOptionalFields_Tbl table
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Table: public.ArticlesOptionalFields_Tbl
+DROP TABLE IF EXISTS public."ArticlesOptionalFields_Tbl" CASCADE;
+
+CREATE TABLE IF NOT EXISTS public."ArticlesOptionalFields_Tbl"
+(
+    "IDNum" integer NOT NULL DEFAULT nextval('"ArticlesOptionalFields_Seq"'::regclass),
+    "ID" uuid NOT NULL DEFAULT uuid_generate_v4 (),
+    "TableFieldIDn" integer NOT NULL,
+    "ArticleIDn" integer NOT NULL,
+    "BusinessUnitIDn" integer NOT NULL,
+			-- la clave primaria: es la propiedad (columna) TableFieldIDn + el ArticleIDn (Tabla) + CompanyIDn
+    "FieldValueIDn" integer,
+    "FieldNumValue" real,
+    "FieldTextValue" character varying(250) COLLATE pg_catalog."default",
+    "StateIDn" smallint NOT NULL,
+    "CreatedByIDn" integer NOT NULL,
+    "LastModifiedByIDn" integer NOT NULL,
+    "OwnerIDn" integer NOT NULL,
+    "DateCreated" timestamp without time zone NOT NULL,
+    "DateTimeStamp" timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "TableHistory" text COLLATE pg_catalog."default",
+    CONSTRAINT "AofPk_IDNum" PRIMARY KEY ("IDNum"),
+    CONSTRAINT "AofUnique_ID" UNIQUE ("ID"),
+    CONSTRAINT "AofUnique_IDTblFieldArticleBusinessUnit" UNIQUE ("TableFieldIDn", "ArticleIDn", "BusinessUnitIDn")
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public."ArticlesOptionalFields_Tbl"
+    OWNER to postgres;
+
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Create the comments of the table fields elements
+-- 
+COMMENT ON TABLE public."ArticlesOptionalFields_Tbl"
+    IS 'Contains the columns/fields/properties of the Items which are optionals.
+In each record you specify the property and the value it assumes for each item.';
+
+COMMENT ON COLUMN public."ArtDataElement_Tbl"."IDNum"
+    IS 'The IDNum is the autoincrement number';
+
+COMMENT ON COLUMN public."ArtDataElement_Tbl"."ID"
+    IS 'The ID is the uniqueidentifier auto generated V4';
+
+COMMENT ON COLUMN public."ArticlesOptionalFields_Tbl"."TableFieldIDn"
+    IS 'The TableFieldIDn is the IDNum of the field property. Link with the System database - SysTableFields.';
+
+COMMENT ON COLUMN public."ArticlesOptionalFields_Tbl"."ArticleIDn"
+    IS 'The ArticleIDn is the IDNum of the article. Link with the diccionary table - ArtTDataElement.';
+
+COMMENT ON COLUMN public."ArticlesOptionalFields_Tbl"."BusinessUnitIDn"
+    IS 'The BusinessUnitIDn is the business unit that the articles belong.';
+
+COMMENT ON COLUMN public."ArticlesOptionalFields_Tbl"."FieldValueIDn"
+    IS 'The FieldValueIDn is the IDNum of the property, when its come from the diccionary ArtDataElement.';
+
+COMMENT ON COLUMN public."ArticlesOptionalFields_Tbl"."FieldNumValue"
+    IS 'The FieldNumValue is a numeric value of the property.';
+
+COMMENT ON COLUMN public."ArticlesOptionalFields_Tbl"."FieldTextValue"
+    IS 'The FieldTextValue is a text value of the property, this value is not standar and can´t be multilanguage.';
+
+COMMENT ON COLUMN public."ArticlesOptionalFields_Tbl"."StateIDn"
+    IS 'The StatedIDn is the IDNum that define if the record is enable or not.';
+
+COMMENT ON COLUMN public."ArticlesOptionalFields_Tbl"."CreatedByIDn"
+    IS 'The CreatedByIDn is the IDNum of the user who created the record.';
+
+COMMENT ON COLUMN public."ArticlesOptionalFields_Tbl"."LastModifiedByIDn"
+    IS 'The LastModifiedByIDn is the IDNum of the last user who modified the record.';
+
+COMMENT ON COLUMN public."ArticlesOptionalFields_Tbl"."OwnerIDn"
+    IS 'The OwnerIDn is the IDNum of the record owner.';
+
+COMMENT ON COLUMN public."ArticlesOptionalFields_Tbl"."DateCreated"
+    IS 'The DateCreated is the record creation datetime UTC.';
+
+COMMENT ON COLUMN public."ArticlesOptionalFields_Tbl"."DateTimeStamp"
+    IS 'The DateTimeStamp is the datetime UTC of the last modification.';
+
+COMMENT ON COLUMN public."ArticlesOptionalFields_Tbl"."TableHistory"
+    IS 'The TableHistory contain then change history of each column.';
+
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Create the comments of the constraint elements
+-- 
+COMMENT ON CONSTRAINT "AofPk_IDNum" ON public."ArticlesOptionalFields_Tbl"
+    IS 'The sequence ArtArticlesOptionalFields_Tbl_seq generate the nextval';
+
+COMMENT ON CONSTRAINT "AofUnique_ID" ON public."ArticlesOptionalFields_Tbl"
+    IS 'Is the uniqueidentifier';
+
+COMMENT ON CONSTRAINT "AofUnique_IDTblFieldArticleBusinessUnit" ON public."ArticlesOptionalFields_Tbl"
+    IS 'An field property can be unique for an article and a business unit.';
+
+-- #########################################################################################################################################################################################
+-- Second create the trigger before insert
+--	Step 1: create the function before insert
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- FUNCTION: public.ArticlesOptionalFieldsBeforeInsert_Tfnc()
+DROP FUNCTION IF EXISTS public."ArticlesOptionalFieldsBeforeInsert_Tfnc"() CASCADE;
+
+CREATE OR REPLACE FUNCTION public."ArticlesOptionalFieldsBeforeInsert_Tfnc"()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+BEGIN
+	-- ------------------------------------------------------------------------------------------------------------------
+	-- Set the created date
+	IF NEW."DateCreated" IS NULL THEN 
+		NEW."DateCreated" := CURRENT_TIMESTAMP;
+	END IF;
+RETURN NEW;
+END;
+$BODY$;
+
+ALTER FUNCTION public."ArticlesOptionalFieldsBeforeInsert_Tfnc"()
+    OWNER TO postgres;
+
+COMMENT ON FUNCTION public."ArticlesOptionalFieldsBeforeInsert_Tfnc"()
+    IS 'Create the function to set de current timestamp for the datecreated field.
+	This funtion is used by the articles table before insert trigger.';
+
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--	Step 2: create the trigger before insert in the ArticlesOptionalFields table
+-- Trigger: ArticlesOptionalFieldsBeforeInsert_Trg
+DROP TRIGGER IF EXISTS "ArticlesOptionalFieldsBeforeInsert_Trg" ON public."ArticlesOptionalFields_Tbl" CASCADE;
+
+CREATE TRIGGER "ArticlesOptionalFieldsBeforeInsert_Trg"
+    BEFORE INSERT
+    ON public."ArticlesOptionalFields_Tbl"
+    FOR EACH ROW
+    EXECUTE FUNCTION public."ArticlesOptionalFieldsBeforeInsert_Tfnc"();
+
+COMMENT ON TRIGGER "ArticlesOptionalFieldsBeforeInsert_Trg" ON public."ArticlesOptionalFields_Tbl"
+    IS 'Set the datetime UTC of the DateCreated field';
+
+-- #########################################################################################################################################################################################
+-- Third create the trigger before update
+--	Step 1: create the function before update
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- FUNCTION: public.ArticlesOptionalFieldsBeforeUpdate_Tfnc()
+DROP FUNCTION IF EXISTS public."ArticlesOptionalFieldsBeforeUpdate_Tfnc"() CASCADE;
+
+CREATE OR REPLACE FUNCTION public."ArticlesOptionalFieldsBeforeUpdate_Tfnc"()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+DECLARE
+	v_TableHistory text;
+	v_TableHistoryOld text;
+BEGIN
+	-- ------------------------------------------------------------------------------------------------------------------
+	-- Set the DateTimeStamp
+	NEW."DateTimeStamp" := CURRENT_TIMESTAMP;
+	-- ------------------------------------------------------------------------------------------------------------------
+	-- Set the created date
+	IF NEW."TableHistory" = 'SetNull' THEN 
+		NEW."TableHistory" := NULL;
+	ELSEIF NEW."TableHistory" = 'SetOff' THEN
+		NEW."TableHistory" := OLD."TableHistory";
+	ELSE
+		v_TableHistoryOld := OLD."TableHistory";
+		v_TableHistory = '';
+		IF NEW."TableFieldIDn" <> OLD."TableFieldIDn" THEN v_TableHistory := OLD."TableFieldIDn"; ELSE v_TableHistory := '†'; END IF;
+		IF NEW."ArticleIDn" <> OLD."ArticleIDn" THEN v_TableHistory := OLD."ArticleIDn"; ELSE v_TableHistory := '†'; END IF;
+		IF NEW."BusinessUnitIDn" <> OLD."BusinessUnitIDn" THEN v_TableHistory := OLD."BusinessUnitIDn"; ELSE v_TableHistory := '†'; END IF;
+		IF NEW."FieldValueIDn" <> OLD."FieldValueIDn" THEN v_TableHistory := OLD."FieldValueIDn"; ELSE v_TableHistory := '†'; END IF;
+		IF NEW."FieldNumValue" <> OLD."FieldNumValue" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."FieldNumValue"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
+		IF NEW."FieldTextValue" <> OLD."FieldTextValue" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."FieldTextValue"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
+		IF NEW."StateIDn" <> OLD."StateIDn" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."StateIDn"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
+		IF NEW."CreatedByIDn" <> OLD."CreatedByIDn" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."CreatedByIDn"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
+		IF NEW."LastModifiedByIDn" <> OLD."LastModifiedByIDn" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."LastModifiedByIDn"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
+		IF NEW."OwnerIDn" <> OLD."OwnerIDn" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."OwnerIDn"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
+		IF v_TableHistoryOld IS NULL THEN v_TableHistory := CONCAT(v_TableHistory,'†',NEW."DateCreated"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
+		IF NEW."DateTimeStamp" <> OLD."DateTimeStamp" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."DateTimeStamp"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
+		IF v_TableHistoryOld IS NULL THEN
+			NEW."TableHistory" := v_TableHistory;
+		ELSE
+			NEW."TableHistory" := CONCAT(v_TableHistory,'‡',v_TableHistoryOld);
+		END IF;
+		
+	END IF;
+	RETURN NEW;
+END;
+$BODY$;
+
+ALTER FUNCTION public."ArticlesOptionalFieldsBeforeUpdate_Tfnc"()
+    OWNER TO postgres;
+
+COMMENT ON FUNCTION public."ArticlesOptionalFieldsBeforeUpdate_Tfnc"()
+    IS 'Create the function to set the new datetimestamp and the history of the record.
+	This funtion is used by the articles table before update trigger.';
+
+-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--	Step 2: create the trigger before update in the ArticlesOptionalFields table
+-- Trigger: ArticlesOptionalFieldsBeforeUpdate_Trg
+DROP TRIGGER IF EXISTS "ArticlesOptionalFieldsBeforeUpdate_Trg" ON public."ArticlesOptionalFields_Tbl" CASCADE;
+
+CREATE TRIGGER "ArticlesOptionalFieldsBeforeUpdate_Trg"
+    BEFORE UPDATE 
+    ON public."ArticlesOptionalFieldsOptionalFields_Tbl"
+    FOR EACH ROW
+    EXECUTE FUNCTION public."ArticlesOptionalFieldsBeforeUpdate_Tfnc"();
+
+COMMENT ON TRIGGER "ArticlesOptionalFieldsBeforeUpdate_Trg" ON public."ArticlesOptionalFields_Tbl"
+    IS 'Set the datetime UTC and the record History.';
