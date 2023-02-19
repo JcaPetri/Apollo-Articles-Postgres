@@ -1,0 +1,131 @@
+-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+-- Create the MirBaseElement_Tbl table
+/* 
+It is the dictionary of the System BaseElement_Tbl module.
+Each record is generated in the System database. The MirBaseElement_Tbl is a mirror of the SysBaseElement_Tbl.
+The ID (uniqueidentifier) ​​and IDNum (unique autonumerical value) are generated in thiers table.
+In order for the same IDName word to have different meanings depending on its use, it is defined for a Scope, BusinessUnit and Language.
+To respect all the rules the unique value must be the combination of: Name/Scope/BusinessUnit/Language.
+is unique for a:
+  Name     -> is the code readable by the user
+  Scope     -> the Name must be unique for the application Scope, usually a Table.
+  BusinessUnit -> the Name must be unique for the BusinessUnit.
+  Language -> the Name must be unique for Language. This dictionary has a default language defined.
+Important: the object exits when it is created in the respective table, that it is created in the dictionary does not affect the system.
+Example: the pampa article is created in the dictionary, but it does not exist until it is created in the Articles table.
+The Scope and BusinessUnit combination can be the Kafka/rabbitMq topic.
+*/
+
+
+-- #########################################################################################################################################################################################
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- First create the MirBaseElement_Tbl table
+-- 
+-- Table: public.MirBaseElement_Tbl
+DROP TABLE IF EXISTS public."MirBaseElement_Tbl" CASCADE;
+
+CREATE TABLE public."MirBaseElement_Tbl"
+(
+    "IDNum" integer NOT NULL,
+    "ID" character varying(38) NOT NULL,
+    "IDName" character varying(250) NOT NULL,
+    "IDNameStructureIDn" integer NOT NULL,
+    "ScopeIDn" integer NOT NULL,
+    "CompanyIDn" integer NOT NULL,
+    "LanguageIDn" integer NOT NULL,
+    "IDCode" integer NOT NULL,
+    "DefinitionIDn" integer NOT NULL,
+    "InformationTypeIDn" integer NOT NULL,
+    "IDIsUsed" smallint NOT NULL,
+    "StateIDn" smallint NOT NULL,
+    "CreatedByIDn" integer NOT NULL,
+    "LastModifiedByIDn" integer NOT NULL,
+    "OwnerIDn" integer NOT NULL,
+    CONSTRAINT "MbePk_IDNum" PRIMARY KEY ("IDNum"),
+    CONSTRAINT "MbeUnique_ID" UNIQUE ("ID"),
+    CONSTRAINT "MbeUnique_IDNameScopeCompLang" UNIQUE ("IDName", "ScopeIDn", "CompanyIDn", "LanguageIDn"),
+    CONSTRAINT "MbeUnique_IDScopeIDCode" UNIQUE ("ScopeIDn", "IDCode")
+);
+
+ALTER TABLE IF EXISTS public."MirBaseElement_Tbl"
+    OWNER to postgres;
+
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Create the comments of each table element
+-- 
+COMMENT ON TABLE public."MirBaseElement_Tbl"
+    IS 'It is the dictionary of the System BaseElement_Tbl module.
+Each record is generated in the System database. The MirBaseElement_Tbl is a mirror of the SysBaseElement_Tbl.
+The ID (uniqueidentifier) ​​and IDNum (unique autonumerical value) are generated in thiers table.
+In order for the same IDName word to have different meanings depending on its use, it is defined for a Scope, BusinessUnit and Language.
+To respect all the rules the unique value must be the combination of: Name/Scope/BusinessUnit/Language.
+is unique for a:
+  Name     -> is the code readable by the user
+  Scope     -> the Name must be unique for the application Scope, usually a Table.
+  BusinessUnit -> the Name must be unique for the BusinessUnit.
+  Language -> the Name must be unique for Language. This dictionary has a default language defined.
+Important: the object exits when it is created in the respective table, that it is created in the dictionary does not affect the system.
+Example: the pampa article is created in the dictionary, but it does not exist until it is created in the Articles table.
+The Scope and BusinessUnit combination can be the Kafka/rabbitMq topic.';
+
+COMMENT ON COLUMN public."MirBaseElement_Tbl"."IDNum"
+    IS 'The IDNum is the autoincrement number, this value is generated en SysBaseElement_Tbl. This table belong to System database.';
+
+COMMENT ON COLUMN public."MirBaseElement_Tbl"."ID"
+    IS 'The ID is the uniqueidentifier auto generated V4, this value is generated en SysBaseElement_Tbl. This table belong to System database.';
+
+COMMENT ON COLUMN public."MirBaseElement_Tbl"."IDName"
+    IS 'The IDName is the user-readable code for the selected language.';
+
+COMMENT ON COLUMN public."MirBaseElement_Tbl"."IDNameStructureIDn"
+    IS 'The IDNameStructureIDn is the IDNum of the IDName structure, if the IDName is multivalued, here it refers to the structure.';
+
+COMMENT ON COLUMN public."MirBaseElement_Tbl"."ScopeIDn"
+    IS 'The ScopeIDn is the IdNum of the Scope, the Name must be unique for the scope of application, usually a Table';
+
+COMMENT ON COLUMN public."MirBaseElement_Tbl"."CompanyIDn"
+    IS 'The CompanyIDn is the IdNum of the Company to which the IDName is assigned';
+
+COMMENT ON COLUMN public."MirBaseElement_Tbl"."LanguageIDn"
+    IS 'The LanguageIDn is the IdNum of the language in which the Name is defined';
+
+COMMENT ON COLUMN public."MirBaseElement_Tbl"."IDCode"
+    IS 'The IDCode is the unique code of the record for a scope and company.';
+
+COMMENT ON COLUMN public."MirBaseElement_Tbl"."DefinitionIDn"
+    IS 'The DefinitionIDn is the IdNum of the element definition type.';
+
+COMMENT ON COLUMN public."MirBaseElement_Tbl"."InformationTypeIDn"
+    IS 'Then InformationTypeIDn is the IdNum of the type of information that the record represents.';
+
+COMMENT ON COLUMN public."MirBaseElement_Tbl"."IDIsUsed"
+    IS 'The IDIsUsed determines if the registry is used or not.';
+
+COMMENT ON COLUMN public."MirBaseElement_Tbl"."StateIDn"
+    IS 'The StatedIDn define if the record is enable or not.';
+
+COMMENT ON COLUMN public."MirBaseElement_Tbl"."CreatedByIDn"
+    IS 'The CreatedByIDn is the IdNum of the user who created the record.';
+
+COMMENT ON COLUMN public."MirBaseElement_Tbl"."LastModifiedByIDn"
+    IS 'The LastModifiedByIDn is the IdNum of the last user who modified the record.';
+
+COMMENT ON COLUMN public."MirBaseElement_Tbl"."OwnerIDn"
+    IS 'The OwnerIDn is the IdNum of the record owner.';
+
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Create the comments of the constraint elements
+-- 
+COMMENT ON CONSTRAINT "MbePk_IDNum" ON public."MirBaseElement_Tbl"
+    IS 'The sequence is generated in the SysBaseElement_Tbl. This table belong to System database.';
+
+COMMENT ON CONSTRAINT "MbeUnique_ID" ON public."MirBaseElement_Tbl"
+    IS 'Is the uniqueidentifier, that is generated in the SysBaseElement_Tbl. This table belong to System database.';
+
+COMMENT ON CONSTRAINT "MbeUnique_IDNameScopeCompLang" ON public."MirBaseElement_Tbl"
+    IS 'A name can be unique for a ScopeId, for a CompanyId, and LanguageId.';
+
+COMMENT ON CONSTRAINT "MbeUnique_IDScopeIDCode" ON public."MirBaseElement_Tbl"
+    IS 'A CodeId can be unique for a ScopeId, for a CompanyId.
+Thats mean, you can''t duplicate the CodeId for one scope.';
+
