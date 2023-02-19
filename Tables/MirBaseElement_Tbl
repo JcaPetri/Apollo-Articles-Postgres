@@ -31,7 +31,7 @@ CREATE TABLE public."MirBaseElement_Tbl"
     "IDName" character varying(250) NOT NULL,
     "IDNameStructureIDn" integer NOT NULL,
     "ScopeIDn" integer NOT NULL,
-    "CompanyIDn" integer NOT NULL,
+    "BusinessUnitIDn" integer NOT NULL,
     "LanguageIDn" integer NOT NULL,
     "IDCode" integer NOT NULL,
     "DefinitionIDn" integer NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE public."MirBaseElement_Tbl"
     "OwnerIDn" integer NOT NULL,
     CONSTRAINT "MbePk_IDNum" PRIMARY KEY ("IDNum"),
     CONSTRAINT "MbeUnique_ID" UNIQUE ("ID"),
-    CONSTRAINT "MbeUnique_IDNameScopeCompLang" UNIQUE ("IDName", "ScopeIDn", "CompanyIDn", "LanguageIDn"),
+    CONSTRAINT "MbeUnique_IDNameScopeCompLang" UNIQUE ("IDName", "ScopeIDn", "BusinessUnitIDn", "LanguageIDn"),
     CONSTRAINT "MbeUnique_IDScopeIDCode" UNIQUE ("ScopeIDn", "IDCode")
 );
 
@@ -83,8 +83,8 @@ COMMENT ON COLUMN public."MirBaseElement_Tbl"."IDNameStructureIDn"
 COMMENT ON COLUMN public."MirBaseElement_Tbl"."ScopeIDn"
     IS 'The ScopeIDn is the IdNum of the Scope, the Name must be unique for the scope of application, usually a Table';
 
-COMMENT ON COLUMN public."MirBaseElement_Tbl"."CompanyIDn"
-    IS 'The CompanyIDn is the IdNum of the Company to which the IDName is assigned';
+COMMENT ON COLUMN public."MirBaseElement_Tbl"."BusinessUnitIDn"
+    IS 'The BusinessUnitIDn is the IdNum of the BusinessUnit to which the IDName is assigned';
 
 COMMENT ON COLUMN public."MirBaseElement_Tbl"."LanguageIDn"
     IS 'The LanguageIDn is the IdNum of the language in which the Name is defined';
@@ -123,9 +123,8 @@ COMMENT ON CONSTRAINT "MbeUnique_ID" ON public."MirBaseElement_Tbl"
     IS 'Is the uniqueidentifier, that is generated in the SysBaseElement_Tbl. This table belong to System database.';
 
 COMMENT ON CONSTRAINT "MbeUnique_IDNameScopeCompLang" ON public."MirBaseElement_Tbl"
-    IS 'A name can be unique for a ScopeId, for a CompanyId, and LanguageId.';
+    IS 'A name can be unique for a ScopeId, for a BusinessUnitIDn, and LanguageId.';
 
 COMMENT ON CONSTRAINT "MbeUnique_IDScopeIDCode" ON public."MirBaseElement_Tbl"
-    IS 'A CodeId can be unique for a ScopeId, for a CompanyId.
+    IS 'A CodeId can be unique for a ScopeId, for a BusinessUnitIDn.
 Thats mean, you can''t duplicate the CodeId for one scope.';
-
