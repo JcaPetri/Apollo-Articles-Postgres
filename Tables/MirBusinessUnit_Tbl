@@ -1,0 +1,59 @@
+-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+-- Create the MirBusinessUnit_Tbl table
+/* 
+It is the Business Unit of the System BusinessUnit_Tbl module.
+Each record is generated in the System database. The MirBusinessUnit_Tbl is a mirror of the SysBusinessUnit_Tbl.
+The Business Unit is the minimal unit of a Company. Within a company there may be several business units.
+The Scope and BusinessUnit combination can be the Kafka/rabbitMq topic.
+*/
+
+-- #########################################################################################################################################################################################
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- First create the MirBusinessUnit_Tbl table
+-- 
+-- Table: public.MirBusinessUnit_Tbl
+DROP TABLE IF EXISTS public."MirBusinessUnit_Tbl" CASCADE;
+
+CREATE TABLE public."MirBusinessUnit_Tbl"
+(
+    "BusinessUnitIDn" integer NOT NULL,
+    "StateIDn" smallint NOT NULL,
+    "CreatedByIDn" integer NOT NULL,
+    "LastModifiedByIDn" integer NOT NULL,
+    "OwnerIDn" integer NOT NULL,
+    CONSTRAINT "MbuPk_IDBusinessUnit" PRIMARY KEY ("BusinessUnitIDn")
+);
+
+ALTER TABLE IF EXISTS public."MirBusinessUnit_Tbl"
+    OWNER to postgres;
+
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Create the comments of each table element
+-- 
+COMMENT ON TABLE public."MirBusinessUnit_Tbl"
+    IS 'It is the Business Unit of the System BusinessUnit_Tbl module.
+Each record is generated in the System database. The MirBusinessUnit_Tbl is a mirror of the SysBusinessUnit_Tbl.
+The Business Unit is the minimal unit of a Company. Within a company there may be several business units.
+The Scope and BusinessUnit combination can be the Kafka/rabbitMq topic.
+';
+
+COMMENT ON COLUMN public."MirBusinessUnit_Tbl"."BusinessUnitIDn"
+    IS 'The BusinessUnitIDn is the number that is in the table SysBaseElement_Tbl. This table belong to System database.';
+
+COMMENT ON COLUMN public."MirBusinessUnit_Tbl"."StateIDn"
+    IS 'The StatedIDn define if the record is enable or not.';
+
+COMMENT ON COLUMN public."MirBusinessUnit_Tbl"."CreatedByIDn"
+    IS 'The CreatedByIDn is the IdNum of the user who created the record.';
+
+COMMENT ON COLUMN public."MirBusinessUnit_Tbl"."LastModifiedByIDn"
+    IS 'The LastModifiedByIDn is the IdNum of the last user who modified the record.';
+
+COMMENT ON COLUMN public."MirBusinessUnit_Tbl"."OwnerIDn"
+    IS 'The OwnerIDn is the IdNum of the record owner.';
+
+-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Create the comments of the constraint elements
+-- 
+COMMENT ON CONSTRAINT "MbuPk_IDBusinessUnit" ON public."MirBusinessUnit_Tbl"
+    IS 'The sequence is generated in the SysBaseElement_Tbl. This table belong to System database.';
