@@ -2,7 +2,7 @@
 -- Create the Articles_Tbl table
 -- Contains the articles information. 
 -- The articles exists since you create them in this table. 
--- It's information, of what are they, are in the DataElement table.
+-- It's information, of what are they, are in the ArtDataElements table.
 -- The primary key: is articleIDn field and must be unique for each business unit.
 
 -- #########################################################################################################################################################################################
@@ -40,7 +40,7 @@ ALTER TABLE IF EXISTS public."Articles_Tbl"
 -- 
 COMMENT ON TABLE public."Articles_Tbl"
     IS 'Contains the articles information. 
-	The articles exists since you create them in this table. It´s information, of what are they, are in the DataElement table.
+	The articles exists since you create them in this table. The information, of what are they, are in the DataElements table.
 	The primary key is articleIDn field and must be unique for each business unit.';
 
 COMMENT ON COLUMN public."Articles_Tbl"."ArticleIDn"
@@ -83,7 +83,7 @@ COMMENT ON COLUMN public."Articles_Tbl"."TableHistory"
 -- Create the comments of the constraint elements
 -- 
 COMMENT ON CONSTRAINT "ArtPk_ArticleIDn" ON public."Articles_Tbl"
-    IS 'The ArticleIDn came from the ArtTDataElement, thats is a integer generated value.';
+    IS 'The ArticleIDn came from the ArtTDataElements, thats is a integer generated value.';
 
 COMMENT ON CONSTRAINT "ArtUnique_IDArticleBusinessUnit" ON public."Articles_Tbl"
     IS 'An article can be unique for a business unit.';
@@ -120,7 +120,7 @@ ALTER FUNCTION public."ArticlesBeforeInsert_Tfnc"()
 
 COMMENT ON FUNCTION public."ArticlesBeforeInsert_Tfnc"()
     IS 'Create the function to set de current timestamp for the datecreated field.
-	This funtion is used by the articles table before insert trigger.';
+	This funtion is used by the Articles_Tbl before insert trigger.';
 
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --	Step 2: create the trigger before insert in the Articles table
@@ -191,7 +191,7 @@ ALTER FUNCTION public."ArticlesBeforeUpdate_Tfnc"()
 
 COMMENT ON FUNCTION public."ArticlesBeforeUpdate_Tfnc"()
     IS 'Create the function to set the new datetimestamp and the history of the record.
-	This funtion is used by the articles table before update trigger.';
+	This funtion is used by the Articles_Tbl before update trigger.';
 
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --	Step 2: create the trigger before update in the Articles table
