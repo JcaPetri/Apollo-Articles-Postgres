@@ -1,5 +1,5 @@
 -- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
--- Create the ArtDataElement_Tbl table
+-- Create the ArtDataElements_Tbl table
 /* 
 It is the dictionary of the Articles module.
 Each code entered generates an ID (uniqueidentifier) ​​and an IDNum unique autonumerical value.
@@ -18,41 +18,39 @@ The Scope and BusinessUnit combination can be the Kafka/rabbitMq topic.
 
 -- #########################################################################################################################################################################################
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- First create the sequence ArtDataElement_seq
+-- First create the sequence ArtDataElements_seq
 -- 
-DROP SEQUENCE IF EXISTS public."ArtDataElement_Seq" CASCADE;
+DROP SEQUENCE IF EXISTS public."ArtDataElements_Seq" CASCADE;
 
-CREATE SEQUENCE public."ArtDataElement_Seq"
+CREATE SEQUENCE public."ArtDataElements_Seq"
     INCREMENT 1
     START 1
     MINVALUE 1
     MAXVALUE 2147483647
-    CACHE 1
-    -- OWNED BY "ArtDataElement_Tbl"."IDNum"
-	;
+    CACHE 1;
 
-ALTER SEQUENCE public."ArtDataElement_Seq"
+ALTER SEQUENCE public."ArtDataElements_Seq"
     OWNER TO postgres;
 
-COMMENT ON SEQUENCE public."ArtDataElement_Seq"
-    IS 'The sequence ArtDataElement_Tbl_seq generate the nextval of the IDNum';
+COMMENT ON SEQUENCE public."ArtDataElements_Seq"
+    IS 'The sequence ArtDataElements_Tbl_seq generate the nextval of the IDNum';
 
 
 -- #########################################################################################################################################################################################
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Second create the ArtDataElement_Tbl table
+-- Second create the ArtDataElements_Tbl table
 -- 
--- Table: public.ArtDataElement_Tbl
-DROP TABLE IF EXISTS public."ArtDataElement_Tbl" CASCADE;
+-- Table: public.ArtDataElements_Tbl
+DROP TABLE IF EXISTS public."ArtDataElements_Tbl" CASCADE;
 
-CREATE TABLE public."ArtDataElement_Tbl"
+CREATE TABLE public."ArtDataElements_Tbl"
 (
-    "IDNum" integer NOT NULL DEFAULT nextval('"ArtDataElement_Seq"'::regclass),
+    "IDNum" integer NOT NULL DEFAULT nextval('"ArtDataElements_Seq"'::regclass),
     "ID" uuid NOT NULL DEFAULT uuid_generate_v4 (),
     "IDName" character varying(250) NOT NULL,
     "IDNameStructureIDn" integer NOT NULL,
     "ScopeIDn" integer NOT NULL,
-    "CompanyIDn" integer NOT NULL,
+    "BusinessUnitIDn" integer NOT NULL,
     "LanguageIDn" integer NOT NULL,
     "IDCode" integer NOT NULL,
     "DefinitionIDn" integer NOT NULL,
@@ -62,22 +60,22 @@ CREATE TABLE public."ArtDataElement_Tbl"
     "CreatedByIDn" integer NOT NULL,
     "LastModifiedByIDn" integer NOT NULL,
     "OwnerIDn" integer NOT NULL,
-    "DateCreated" timestamp without time zone NOT NULL,
-    "DateTimeStamp" timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "DateCreated" timestamp with time zone NOT NULL,
+    "DateTimeStamp" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "TableHistory" text,
     CONSTRAINT "AdePk_IDNum" PRIMARY KEY ("IDNum"),
     CONSTRAINT "AdeUnique_ID" UNIQUE ("ID"),
-    CONSTRAINT "AdeUnique_IDNameScopeCompLang" UNIQUE ("IDName", "ScopeIDn", "CompanyIDn", "LanguageIDn"),
+    CONSTRAINT "AdeUnique_IDNameScopeBusUnitLang" UNIQUE ("IDName", "ScopeIDn", "BusinessUnitIDn", "LanguageIDn"),
     CONSTRAINT "AdeUnique_IDScopeIDCode" UNIQUE ("ScopeIDn", "IDCode")
 );
 
-ALTER TABLE IF EXISTS public."ArtDataElement_Tbl"
+ALTER TABLE IF EXISTS public."ArtDataElements_Tbl"
     OWNER to postgres;
 
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Create the comments of each table element
 -- 
-COMMENT ON TABLE public."ArtDataElement_Tbl"
+COMMENT ON TABLE public."ArtDataElements_Tbl"
     IS 'It is the dictionary of the Articles module.
 Each code entered generates an ID (uniqueidentifier) ​​and an IDNum unique autonumerical value.
 The rest of the tables only have the IDNum. To determine what a code means, you should consult this table.
@@ -93,86 +91,85 @@ Example: the pampa article is created in the dictionary, but it does not exist u
 The Scope and BusinessUnit combination can be the Kafka/rabbitMq topic.
 ';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."IDNum"
+COMMENT ON COLUMN public."ArtDataElements_Tbl"."IDNum"
     IS 'The IDNum is the autoincrement number';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."ID"
+COMMENT ON COLUMN public."ArtDataElements_Tbl"."ID"
     IS 'The ID is the uniqueidentifier auto generated V4';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."IDName"
+COMMENT ON COLUMN public."ArtDataElements_Tbl"."IDName"
     IS 'The IDName is the user-readable code for the selected language.';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."IDNameStructureIDn"
+COMMENT ON COLUMN public."ArtDataElements_Tbl"."IDNameStructureIDn"
     IS 'The IDNameStructureIDn is the IDNum of the IDName structure, if the IDName is multivalued, here it refers to the structure.';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."ScopeIDn"
+COMMENT ON COLUMN public."ArtDataElements_Tbl"."ScopeIDn"
     IS 'The ScopeIDn is the IdNum of the Scope, the Name must be unique for the scope of application, usually a Table';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."CompanyIDn"
-    IS 'The CompanyIDn is the IdNum of the Company to which the IDName is assigned';
+COMMENT ON COLUMN public."ArtDataElements_Tbl"."BusinessUnitIDn"
+    IS 'The BusinessUnitIDn is the IdNum of the Business Unit to which the IDName is assigned';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."LanguageIDn"
+COMMENT ON COLUMN public."ArtDataElements_Tbl"."LanguageIDn"
     IS 'The LanguageIDn is the IdNum of the language in which the Name is defined';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."IDCode"
-    IS 'The IDCode is the unique code of the record for a scope and company.';
+COMMENT ON COLUMN public."ArtDataElements_Tbl"."IDCode"
+    IS 'The IDCode is the unique code of the record for a scope and business unit.';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."DefinitionIDn"
+COMMENT ON COLUMN public."ArtDataElements_Tbl"."DefinitionIDn"
     IS 'The DefinitionIDn is the IdNum of the element definition type.';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."InformationTypeIDn"
+COMMENT ON COLUMN public."ArtDataElements_Tbl"."InformationTypeIDn"
     IS 'Then InformationTypeIDn is the IdNum of the type of information that the record represents.';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."IDIsUsed"
+COMMENT ON COLUMN public."ArtDataElements_Tbl"."IDIsUsed"
     IS 'The IDIsUsed determines if the registry is used or not.';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."StateIDn"
+COMMENT ON COLUMN public."ArtDataElements_Tbl"."StateIDn"
     IS 'The StatedIDn define if the record is enable or not.';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."CreatedByIDn"
+COMMENT ON COLUMN public."ArtDataElements_Tbl"."CreatedByIDn"
     IS 'The CreatedByIDn is the IdNum of the user who created the record.';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."LastModifiedByIDn"
+COMMENT ON COLUMN public."ArtDataElements_Tbl"."LastModifiedByIDn"
     IS 'The LastModifiedByIDn is the IdNum of the last user who modified the record.';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."OwnerIDn"
+COMMENT ON COLUMN public."ArtDataElements_Tbl"."OwnerIDn"
     IS 'The OwnerIDn is the IdNum of the record owner.';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."DateCreated"
+COMMENT ON COLUMN public."ArtDataElements_Tbl"."DateCreated"
     IS 'The DateCreated is the record creation date with UTC.';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."DateTimeStamp"
+COMMENT ON COLUMN public."ArtDataElements_Tbl"."DateTimeStamp"
     IS 'The DateTimeStamp is the date of the last modification of the record with UTC.';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."TableHistory"
+COMMENT ON COLUMN public."ArtDataElements_Tbl"."TableHistory"
     IS 'The TableHistory contain then change history of each column.';
 
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Create the comments of the constraint elements
 -- 
-COMMENT ON CONSTRAINT "AdePk_IDNum" ON public."ArtDataElement_Tbl"
-    IS 'The sequence ArtDataElement_Tbl_seq generate the nextval';
+COMMENT ON CONSTRAINT "AdePk_IDNum" ON public."ArtDataElements_Tbl"
+    IS 'The sequence ArtDataElements_Tbl_seq generate the nextval';
 
-COMMENT ON CONSTRAINT "AdeUnique_ID" ON public."ArtDataElement_Tbl"
+COMMENT ON CONSTRAINT "AdeUnique_ID" ON public."ArtDataElements_Tbl"
     IS 'Is the uniqueidentifier';
 
-COMMENT ON CONSTRAINT "AdeUnique_IDNameScopeCompLang" ON public."ArtDataElement_Tbl"
-    IS 'A name can be unique for a ScopeId, for a CompanyId, and LanguageId.
+COMMENT ON CONSTRAINT "AdeUnique_IDNameScopeBusUnitLang" ON public."ArtDataElements_Tbl"
+    IS 'A name can be unique for a ScopeId, for a BusinessUnitId, and LanguageId.
 Thats mean, Pampa can be a brand or a thin, depend of its scope.';
 
-COMMENT ON CONSTRAINT "AdeUnique_IDScopeIDCode" ON public."ArtDataElement_Tbl"
-    IS 'A CodeId can be unique for a ScopeId, for a CompanyId.
-Thats mean, you can''t duplicate the CodeId for one scope.';
+COMMENT ON CONSTRAINT "AdeUnique_IDScopeIDCode" ON public."ArtDataElements_Tbl"
+    IS 'A CodeId can be unique for a ScopeId, for a BusinessUnitId.';
 
 -- #########################################################################################################################################################################################
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Third create the Trigger Before Insert - ArtDataElement_Tbl
+-- Third create the Trigger Before Insert - ArtDataElements_Tbl
 --	Step 1: create the function before insert
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- FUNCTION: public."ArtDataElementBeforeInsert_Tfnc"()
-DROP FUNCTION IF EXISTS public."ArtDataElementBeforeInsert_Tfnc"() CASCADE;
+-- FUNCTION: public."ArtDataElementsBeforeInsert_Tfnc"()
+DROP FUNCTION IF EXISTS public."ArtDataElementsBeforeInsert_Tfnc"() CASCADE;
 
-CREATE OR REPLACE FUNCTION public."ArtDataElementBeforeInsert_Tfnc"()
+CREATE OR REPLACE FUNCTION public."ArtDataElementsBeforeInsert_Tfnc"()
     RETURNS trigger
     LANGUAGE 'plpgsql'
     COST 100
@@ -187,41 +184,41 @@ BEGIN
 	-- ------------------------------------------------------------------------------------------------------------------
 	-- Set the IdCode if is null
 	IF NEW."IDCode" IS NULL THEN 
-		NEW."IDCode" := (SELECT COALESCE(MAX("IDCode"),0) + 1 FROM public."ArtDataElement_Tbl" WHERE "ScopeIDn" = NEW."ScopeIDn");
+		NEW."IDCode" := (SELECT COALESCE(MAX("IDCode"),0) + 1 FROM public."ArtDataElements_Tbl" WHERE "ScopeIDn" = NEW."ScopeIDn");
 	END IF;
 RETURN NEW;
 END;
 $BODY$;
 
-ALTER FUNCTION public."ArtDataElementBeforeInsert_Tfnc"()
+ALTER FUNCTION public."ArtDataElementsBeforeInsert_Tfnc"()
     OWNER TO postgres;
 
-COMMENT ON FUNCTION public."ArtDataElementBeforeInsert_Tfnc"()
+COMMENT ON FUNCTION public."ArtDataElementsBeforeInsert_Tfnc"()
     IS 'Create the function to set the new datetimestamp and the history of the record.
-	This funtion is used by the articles table before update trigger.';
+	This funtion is used by the ArtDataElements table before update trigger.';
 
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---	Step 2: create the trigger before insert in the ArtDataElement_Tbl table
--- Trigger: ArtDataElementBeforeInsert_Trg
-DROP TRIGGER IF EXISTS "ArtDataElementBeforeInsert_Trg" ON public."ArtDataElement_Tbl" CASCADE;
+--	Step 2: create the trigger before insert in the ArtDataElements_Tbl table
+-- Trigger: ArtDataElementsBeforeInsert_Trg
+DROP TRIGGER IF EXISTS "ArtDataElementsBeforeInsert_Trg" ON public."ArtDataElements_Tbl" CASCADE;
 
-CREATE TRIGGER "ArtDataElementBeforeInsert_Trg"
+CREATE TRIGGER "ArtDataElementsBeforeInsert_Trg"
     BEFORE INSERT
-    ON public."ArtDataElement_Tbl"
+    ON public."ArtDataElements_Tbl"
     FOR EACH ROW
-    EXECUTE FUNCTION public."ArtDataElementBeforeInsert_Tfnc"();
+    EXECUTE FUNCTION public."ArtDataElementsBeforeInsert_Tfnc"();
 
-COMMENT ON TRIGGER "ArtDataElementBeforeInsert_Trg" ON public."ArtDataElement_Tbl"
+COMMENT ON TRIGGER "ArtDataElementsBeforeInsert_Trg" ON public."ArtDataElements_Tbl"
     IS 'Set the datetime UTC of the DateCreated field';
 
 -- #########################################################################################################################################################################################
 -- Fourth create the trigger before update
 --	Step 1: create the function before update
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- FUNCTION: public.ArtDataElementBeforeUpdate_Tfnc()
-DROP FUNCTION IF EXISTS public."ArtDataElementBeforeUpdate_Tfnc"() CASCADE;
+-- FUNCTION: public.ArtDataElementsBeforeUpdate_Tfnc()
+DROP FUNCTION IF EXISTS public."ArtDataElementsBeforeUpdate_Tfnc"() CASCADE;
 
-CREATE OR REPLACE FUNCTION public."ArtDataElementBeforeUpdate_Tfnc"()
+CREATE OR REPLACE FUNCTION public."ArtDataElementsBeforeUpdate_Tfnc"()
     RETURNS trigger
     LANGUAGE 'plpgsql'
     COST 100
@@ -272,19 +269,19 @@ BEGIN
 END;
 $BODY$;
 
-ALTER FUNCTION public."ArtDataElementBeforeUpdate_Tfnc"()
+ALTER FUNCTION public."ArtDataElementsBeforeUpdate_Tfnc"()
     OWNER TO postgres;
 
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---	Step 2: create the trigger before insert in the ArtDataElement_Tbl table
--- Trigger: ArtDataElementBeforeUpdate_Trg
-DROP TRIGGER IF EXISTS "ArtDataElementBeforeUpdate_Trg" ON public."ArtDataElement_Tbl" CASCADE;
+--	Step 2: create the trigger before insert in the ArtDataElements_Tbl table
+-- Trigger: ArtDataElementsBeforeUpdate_Trg
+DROP TRIGGER IF EXISTS "ArtDataElementsBeforeUpdate_Trg" ON public."ArtDataElements_Tbl" CASCADE;
 
-CREATE TRIGGER "ArtDataElementBeforeUpdate_Trg"
+CREATE TRIGGER "ArtDataElementsBeforeUpdate_Trg"
     BEFORE UPDATE 
-    ON public."ArtDataElement_Tbl"
+    ON public."ArtDataElements_Tbl"
     FOR EACH ROW
-    EXECUTE FUNCTION public."ArtDataElementBeforeUpdate_Tfnc"();
+    EXECUTE FUNCTION public."ArtDataElementsBeforeUpdate_Tfnc"();
 
-COMMENT ON TRIGGER "ArtDataElementBeforeUpdate_Trg" ON public."ArtDataElement_Tbl"
+COMMENT ON TRIGGER "ArtDataElementsBeforeUpdate_Trg" ON public."ArtDataElements_Tbl"
     IS 'Set the datetime UTC and the record History.';
