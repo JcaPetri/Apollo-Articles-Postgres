@@ -1,22 +1,22 @@
 -- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
--- Create the ArticlesGeneral_Tbl table
+-- Create the ArtGeneralProperties_Tbl table
 -- Contains the general properties of the articles. 
 -- Before create an Article you must create a general specification of the articles.
 -- The articles properties are set:
 --	1.- the general properties
 --	2.- the individual properties, this override the general properties
--- When an article (record) is created, the relationship is assigned in the ArticleGeneralIDn field.
--- The primary key: is ArticleGeneralIDn field and must be unique for each business unit.
+-- When an article (record) is created, the relationship is assigned in the ArtGeneralPropertyIDn field.
+-- The primary key: is ArtGeneralPropertyIDn field and must be unique for each business unit.
 
 -- #########################################################################################################################################################################################
 -- First create the Table
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Table: public.ArticlesGeneral_Tbl
-DROP TABLE IF EXISTS public."ArticlesGeneral_Tbl" CASCADE;
+-- Table: public.ArtGeneralProperties_Tbl
+DROP TABLE IF EXISTS public."ArtGeneralProperties_Tbl" CASCADE;
 
-CREATE TABLE IF NOT EXISTS public."ArticlesGeneral_Tbl"
+CREATE TABLE IF NOT EXISTS public."ArtGeneralProperties_Tbl"
 (
-    "ArticleGeneralIDn" integer NOT NULL,
+    "ArtGeneralPropertyIDn" integer NOT NULL,
     "BusinessUnitIDn" integer NOT NULL,
     "ScalesUse" boolean,
     "StockEnable" boolean,
@@ -31,92 +31,92 @@ CREATE TABLE IF NOT EXISTS public."ArticlesGeneral_Tbl"
     "CreatedByIDn" integer NOT NULL,
     "LastModifiedByIDn" integer NOT NULL,
     "OwnerIDn" integer NOT NULL,
-    "DateCreated" timestamp without time zone NOT NULL,
-    "DateTimeStamp" timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "DateCreated" timestamp with time zone NOT NULL,
+    "DateTimeStamp" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "TableHistory" text COLLATE pg_catalog."default",
-    CONSTRAINT "AgnPk_ArticleGeneralIDn" PRIMARY KEY ("ArticleGeneralIDn"),
-    CONSTRAINT "AgnUnique_IDArticleGeneralBusinessUnit" UNIQUE ("ArticleGeneralIDn", "BusinessUnitIDn")
+    CONSTRAINT "AgpPk_ArtGeneralPropertyIDn" PRIMARY KEY ("ArtGeneralPropertyIDn"),
+    CONSTRAINT "AgpUnique_IDArticleGeneralBusinessUnit" UNIQUE ("ArtGeneralPropertyIDn", "BusinessUnitIDn")
 )
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public."ArticlesGeneral_Tbl"
+ALTER TABLE IF EXISTS public."ArtGeneralProperties_Tbl"
     OWNER to postgres;
 
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Create the comments of the table fields elements
 -- 
-COMMENT ON TABLE public."ArticlesGeneral_Tbl"
+COMMENT ON TABLE public."ArtGeneralProperties_Tbl"
     IS 'Contains the general properties of the articles. 
 Before create an Article you must create a general specification of the articles.
 The articles properties are set:
      1.- the general properties
      2.- the individual properties, this override the general properties
-When an article (record) is created, the relationship is assigned in the ArticleGeneralIDn field.
-The primary key: is ArticleGeneralIDn field and must be unique for each business unit.';
+When an article (record) is created, the relationship is assigned in the ArtGeneralPropertyIDn field.
+The primary key: is ArtGeneralPropertyIDn field and must be unique for each business unit.';
 
-COMMENT ON COLUMN public."ArticlesGeneral_Tbl"."ArticleGeneralIDn"
-    IS 'The ArticleGeneralIDn is the IDNum of the general articles properties. Link with the diccionary table - ArtTDataElement.';
+COMMENT ON COLUMN public."ArtGeneralProperties_Tbl"."ArtGeneralPropertyIDn"
+    IS 'The ArtGeneralPropertyIDn is the IDNum of the general articles properties. Link with the diccionary table - ArtTDataElement.';
 
-COMMENT ON COLUMN public."ArticlesGeneral_Tbl"."BusinessUnitIDn"
+COMMENT ON COLUMN public."ArtGeneralProperties_Tbl"."BusinessUnitIDn"
     IS 'The BusinessUnitIDn is the business unit that the general articles belong.';
 
-COMMENT ON COLUMN public."ArticlesGeneral_Tbl"."ScalesUse"
+COMMENT ON COLUMN public."ArtGeneralProperties_Tbl"."ScalesUse"
     IS 'The ScalesUse enables the use of scales for the item.';
 
-COMMENT ON COLUMN public."ArticlesGeneral_Tbl"."StockEnable"
+COMMENT ON COLUMN public."ArtGeneralProperties_Tbl"."StockEnable"
     IS 'The StockEnable enables if the article item is carried in stock.';
 
-COMMENT ON COLUMN public."ArticlesGeneral_Tbl"."PartitionsUse"
+COMMENT ON COLUMN public."ArtGeneralProperties_Tbl"."PartitionsUse"
     IS 'The PartitionsUse enables the use of partitions by article.';
 
-COMMENT ON COLUMN public."ArticlesGeneral_Tbl"."PartitionsAutomaticNumbering"
+COMMENT ON COLUMN public."ArtGeneralProperties_Tbl"."PartitionsAutomaticNumbering"
     IS 'The PartitionsAutomaticNumbering enables the use of autonumeric partitions number.';
 
-COMMENT ON COLUMN public."ArticlesGeneral_Tbl"."PartitionsAutoDownloadByAge"
+COMMENT ON COLUMN public."ArtGeneralProperties_Tbl"."PartitionsAutoDownloadByAge"
     IS 'The PartitionsAutoDownloadByAge enable automatic download of partitions matching by seniority.';
 
-COMMENT ON COLUMN public."ArticlesGeneral_Tbl"."SeriesUse"
+COMMENT ON COLUMN public."ArtGeneralProperties_Tbl"."SeriesUse"
     IS 'The SeriesUse enable the use of series by the article.';
 
-COMMENT ON COLUMN public."ArticlesGeneral_Tbl"."SeriesUseMandatory"
+COMMENT ON COLUMN public."ArtGeneralProperties_Tbl"."SeriesUseMandatory"
     IS 'The SeriesUseMandatory establishes as mandatory the use of the series.';
 
-COMMENT ON COLUMN public."ArticlesGeneral_Tbl"."SeriesUseReentry"
+COMMENT ON COLUMN public."ArtGeneralProperties_Tbl"."SeriesUseReentry"
     IS 'The SeriesUseReentry supports re-entry of series, activates the check for duplicate series (current or already sold). Avoid duplicate serie number.';
 
-COMMENT ON COLUMN public."ArticlesGeneral_Tbl"."SeriesUseValidate"
+COMMENT ON COLUMN public."ArtGeneralProperties_Tbl"."SeriesUseValidate"
     IS 'The SeriesUseValidate, validates that the serial number exists in the system. When an expense voucher is loaded, it validates that the available serial numbers exist.';
 
-COMMENT ON COLUMN public."ArticlesGeneral_Tbl"."StateIDn"
+COMMENT ON COLUMN public."ArtGeneralProperties_Tbl"."StateIDn"
    IS 'The StatedIDn is the IDNum that define if the record is enable or not.';
 
-COMMENT ON COLUMN public."ArticlesGeneral_Tbl"."CreatedByIDn"
+COMMENT ON COLUMN public."ArtGeneralProperties_Tbl"."CreatedByIDn"
     IS 'The CreatedByIDn is the IDNum of the user who created the record.';
 
-COMMENT ON COLUMN public."ArticlesGeneral_Tbl"."LastModifiedByIDn"
+COMMENT ON COLUMN public."ArtGeneralProperties_Tbl"."LastModifiedByIDn"
     IS 'The LastModifiedByIDn is the IDNum of the last user who modified the record.';
 
-COMMENT ON COLUMN public."ArticlesGeneral_Tbl"."OwnerIDn"
+COMMENT ON COLUMN public."ArtGeneralProperties_Tbl"."OwnerIDn"
     IS 'The OwnerIDn is the IDNum of the record owner.';
 
-COMMENT ON COLUMN public."ArticlesGeneral_Tbl"."DateCreated"
+COMMENT ON COLUMN public."ArtGeneralProperties_Tbl"."DateCreated"
     IS 'The DateCreated is the record creation datetime UTC.';
 
-COMMENT ON COLUMN public."ArticlesGeneral_Tbl"."DateTimeStamp"
+COMMENT ON COLUMN public."ArtGeneralProperties_Tbl"."DateTimeStamp"
     IS 'The DateTimeStamp is the datetime UTC of the last modification.';
 
-COMMENT ON COLUMN public."ArticlesGeneral_Tbl"."TableHistory"
+COMMENT ON COLUMN public."ArtGeneralProperties_Tbl"."TableHistory"
     IS 'The TableHistory contain then change history of each column.';
 
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Create the comments of the constraint elements
 -- 
-COMMENT ON CONSTRAINT "AgnPk_ArticleGeneralIDn" ON public."ArticlesGeneral_Tbl"
-    IS 'The ArticlesGeneralIDn came from the ArtTDataElement, thats is a integer generated value.';
+COMMENT ON CONSTRAINT "AgpPk_ArtGeneralPropertyIDn" ON public."ArtGeneralProperties_Tbl"
+    IS 'The ArtGeneralPropertyIDn came from the ArtDataElement_Tbl, thats is a integer generated value.';
 
-COMMENT ON CONSTRAINT "AgnUnique_IDArticleGeneralBusinessUnit" ON public."ArticlesGeneral_Tbl"
-    IS 'A General Article property can be unique for a business unit.';
+COMMENT ON CONSTRAINT "AgpUnique_IDArticleGeneralBusinessUnit" ON public."ArtGeneralProperties_Tbl"
+    IS 'A General Article Property can be unique for a business unit.';
 
 -- #########################################################################################################################################################################################
 -- Second create the trigger before insert
@@ -146,20 +146,20 @@ ALTER FUNCTION public."ArticlesGeneralBeforeInsert_Tfnc"()
 
 COMMENT ON FUNCTION public."ArticlesGeneralBeforeInsert_Tfnc"()
     IS 'Create the function to set de current timestamp for the datecreated field.
-	This funtion is used by the ArticlesGeneral_Tbl table before insert trigger.';
+	This funtion is used by the ArtGeneralProperties_Tbl table before insert trigger.';
 
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --	Step 2: create the trigger before insert in the ArticlesGeneral table
 -- Trigger: ArticlesGeneralBeforeInsert_Trg
-DROP TRIGGER IF EXISTS "ArticlesGeneralBeforeInsert_Trg" ON public."ArticlesGeneral_Tbl" CASCADE;
+DROP TRIGGER IF EXISTS "ArticlesGeneralBeforeInsert_Trg" ON public."ArtGeneralProperties_Tbl" CASCADE;
 
 CREATE TRIGGER "ArticlesGeneralBeforeInsert_Trg"
     BEFORE INSERT
-    ON public."ArticlesGeneral_Tbl"
+    ON public."ArtGeneralProperties_Tbl"
     FOR EACH ROW
     EXECUTE FUNCTION public."ArticlesGeneralBeforeInsert_Tfnc"();
 
-COMMENT ON TRIGGER "ArticlesGeneralBeforeInsert_Trg" ON public."ArticlesGeneral_Tbl"
+COMMENT ON TRIGGER "ArticlesGeneralBeforeInsert_Trg" ON public."ArtGeneralProperties_Tbl"
     IS 'Set the datetime UTC of the DateCreated field';
 
 -- #########################################################################################################################################################################################
@@ -223,18 +223,18 @@ ALTER FUNCTION public."ArticlesGeneralBeforeUpdate_Tfnc"()
 
 COMMENT ON FUNCTION public."ArticlesGeneralBeforeUpdate_Tfnc"()
     IS 'Create the function to set the new datetimestamp and the history of the record.
-	This funtion is used by the ArticlesGeneral_Tbl table before update trigger.';
+	This funtion is used by the ArtGeneralProperties_Tbl table before update trigger.';
 
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---	Step 2: create the trigger before update in the ArticlesGeneral_Tbl table
+--	Step 2: create the trigger before update in the ArtGeneralProperties_Tbl table
 -- Trigger: ArticlesGeneralBeforeUpdate_Trg
-DROP TRIGGER IF EXISTS "ArticlesGeneralBeforeUpdate_Trg" ON public."ArticlesGeneral_Tbl" CASCADE;
+DROP TRIGGER IF EXISTS "ArticlesGeneralBeforeUpdate_Trg" ON public."ArtGeneralProperties_Tbl" CASCADE;
 
 CREATE TRIGGER "ArticlesGeneralBeforeUpdate_Trg"
     BEFORE UPDATE 
-    ON public."ArticlesGeneral_Tbl"
+    ON public."ArtGeneralProperties_Tbl"
     FOR EACH ROW
     EXECUTE FUNCTION public."ArticlesGeneralBeforeUpdate_Tfnc"();
 
-COMMENT ON TRIGGER "ArticlesGeneralBeforeUpdate_Trg" ON public."ArticlesGeneral_Tbl"
+COMMENT ON TRIGGER "ArticlesGeneralBeforeUpdate_Trg" ON public."ArtGeneralProperties_Tbl"
     IS 'Set the datetime UTC and the record History.';
