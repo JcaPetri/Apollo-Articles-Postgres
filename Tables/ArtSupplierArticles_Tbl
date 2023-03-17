@@ -1,47 +1,46 @@
 -- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
--- Create the ArticlesSuppliersArticles_Tbl table
--- Contains the relationship between the Company`s items and the Suppliers/Suppliers` items.
--- Therefore, if we associate the Company's item with the supplier, this item will be repeated as many times as suppliers sell that item. 
--- The primary and unique key: are the union of the columns ArticleIDn + ArticleSupplierIDn  + BusinessUnitIDn
--- --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Create the ArtSupplierArticles_Tbl table
+-- Contains the relationship between the Company`s items and the Suppliers items.
+-- Therefore, if we associate the Company's item with the suppliers, this item will be repeated as many times as suppliers sell that item. 
+-- The unique key: are the union of the columns ArticleIDn + ArticleSupplierIDn  + BusinessUnitIDn
 -- To compare the price of different items, it is done through this table.
 -- --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 -- #########################################################################################################################################################################################
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- First create the sequence ArticlesSuppliersArticles_seq
+-- First create the sequence ArtSupplierArticles_seq
 -- 
-DROP SEQUENCE IF EXISTS public."ArticlesSuppliersArticles_Seq" CASCADE;
+DROP SEQUENCE IF EXISTS public."ArtSupplierArticles_Seq" CASCADE;
 
-CREATE SEQUENCE public."ArticlesSuppliersArticles_Seq"
+CREATE SEQUENCE public."ArtSupplierArticles_Seq"
     INCREMENT 1
     START 1
     MINVALUE 1
     MAXVALUE 2147483647
     CACHE 1;
 
-ALTER SEQUENCE public."ArticlesSuppliersArticles_Seq"
+ALTER SEQUENCE public."ArtSupplierArticles_Seq"
     OWNER TO postgres;
 
-COMMENT ON SEQUENCE public."ArticlesSuppliersArticles_Seq"
-    IS 'The sequence ArticlesSuppliersArticles_seq generate the nextval of the IDNum';
+COMMENT ON SEQUENCE public."ArtSupplierArticles_Seq"
+    IS 'The sequence ArtSupplierArticles_seq generate the nextval of the IDNum';
 
 -- #########################################################################################################################################################################################
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Second create the ArticlesSuppliersArticles_Tbl table
+-- Second create the ArtSupplierArticles_Tbl table
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Table: public.ArticlesSuppliersArticles_Tbl
-DROP TABLE IF EXISTS public."ArticlesSuppliersArticles_Tbl" CASCADE;
+-- Table: public.ArtSupplierArticles_Tbl
+DROP TABLE IF EXISTS public."ArtSupplierArticles_Tbl" CASCADE;
 
-CREATE TABLE IF NOT EXISTS public."ArticlesSuppliersArticles_Tbl"
+CREATE TABLE IF NOT EXISTS public."ArtSupplierArticles_Tbl"
 (
-    "IDNum" integer NOT NULL DEFAULT nextval('"ArticlesSuppliersArticles_Seq"'::regclass),
+    "IDNum" integer NOT NULL DEFAULT nextval('"ArtSupplierArticles_Seq"'::regclass),
     "ID" uuid NOT NULL DEFAULT uuid_generate_v4 (),
     "ArticleIDn" integer NOT NULL,
     "ArticleSupplierID" character varying(38) NOT NULL,
     "SupplierIDn" integer NOT NULL,
     "BusinessUnitIDn" integer NOT NULL,
-			-- la clave primaria: es la propiedad (columna) el ArticleIDn (Tabla) + ArticleSupplierID + CompanyIDn
+			-- The unique key: are the union of the columns ArticleIDn + ArticleSupplierID + SupplierIDn + BusinessUnitIDn
     "StateIDn" smallint NOT NULL,
     "CreatedByIDn" integer NOT NULL,
     "LastModifiedByIDn" integer NOT NULL,
@@ -56,77 +55,77 @@ CREATE TABLE IF NOT EXISTS public."ArticlesSuppliersArticles_Tbl"
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public."ArticlesSuppliersArticles_Tbl"
+ALTER TABLE IF EXISTS public."ArtSupplierArticles_Tbl"
     OWNER to postgres;
 
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Create the comments of the table fields elements
 -- 
-COMMENT ON TABLE public."ArticlesSuppliersArticles_Tbl"
-    IS 'Contains the relationship between the Company`s items and the Suppliers/Suppliers` items.
-Therefore, if we associate the Company`s item with the supplier, this item will be repeated as many times as suppliers sell that item. 
-The primary and unique key: are the union of the columns ArticleIDn + ArticleSupplierIDn  + BusinessUnitIDn.
+COMMENT ON TABLE public."ArtSupplierArticles_Tbl"
+    IS 'Contains the relationship between the Company`s items and the Suppliers items.
+Therefore, if we associate the Company´s item with the suppliers, this item will be repeated as many times as suppliers sell that item. 
+The unique key: are the union of the columns ArticleIDn + ArticleSupplierIDn  + BusinessUnitIDn
 To compare the price of different items, it is done through this table.';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."IDNum"
+COMMENT ON COLUMN public."ArtSupplierArticles_Tbl"."IDNum"
     IS 'The IDNum is the autoincrement number';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."ID"
+COMMENT ON COLUMN public."ArtSupplierArticles_Tbl"."ID"
     IS 'The ID is the uniqueidentifier auto generated V4';
 
-COMMENT ON COLUMN public."ArticlesSuppliersArticles_Tbl"."ArticleIDn"
+COMMENT ON COLUMN public."ArtSupplierArticles_Tbl"."ArticleIDn"
     IS 'The ArticleIDn is the IDNum of the article. Link with the Articles_Tbl table.';
 
-COMMENT ON COLUMN public."ArticlesSuppliersArticles_Tbl"."ArticleSupplierID"
+COMMENT ON COLUMN public."ArtSupplierArticles_Tbl"."ArticleSupplierID"
     IS 'The ArticleSupplierID is the unique ID of the supplier article database. Link with the Supplier Database.';
 
-COMMENT ON COLUMN public."ArticlesSuppliersArticles_Tbl"."SupplierIDn"
+COMMENT ON COLUMN public."ArtSupplierArticles_Tbl"."SupplierIDn"
     IS 'The SupplierIDn is the IDNum of the supplier. Link with the Persons Database.';
 
-COMMENT ON COLUMN public."ArticlesSuppliersArticles_Tbl"."BusinessUnitIDn"
+COMMENT ON COLUMN public."ArtSupplierArticles_Tbl"."BusinessUnitIDn"
     IS 'The BusinessUnitIDn is the business unit that the article supplier article belong.';
 
-COMMENT ON COLUMN public."ArticlesSuppliersArticles_Tbl"."StateIDn"
+COMMENT ON COLUMN public."ArtSupplierArticles_Tbl"."StateIDn"
     IS 'The StatedIDn is the IDNum that define if the record is enable or not.';
 
-COMMENT ON COLUMN public."ArticlesSuppliersArticles_Tbl"."CreatedByIDn"
+COMMENT ON COLUMN public."ArtSupplierArticles_Tbl"."CreatedByIDn"
     IS 'The CreatedByIDn is the IDNum of the user who created the record.';
 
-COMMENT ON COLUMN public."ArticlesSuppliersArticles_Tbl"."LastModifiedByIDn"
+COMMENT ON COLUMN public."ArtSupplierArticles_Tbl"."LastModifiedByIDn"
     IS 'The LastModifiedByIDn is the IDNum of the last user who modified the record.';
 
-COMMENT ON COLUMN public."ArticlesSuppliersArticles_Tbl"."OwnerIDn"
+COMMENT ON COLUMN public."ArtSupplierArticles_Tbl"."OwnerIDn"
     IS 'The OwnerIDn is the IDNum of the record owner.';
 
-COMMENT ON COLUMN public."ArticlesSuppliersArticles_Tbl"."DateCreated"
+COMMENT ON COLUMN public."ArtSupplierArticles_Tbl"."DateCreated"
     IS 'The DateCreated is the record creation datetime UTC.';
 
-COMMENT ON COLUMN public."ArticlesSuppliersArticles_Tbl"."DateTimeStamp"
+COMMENT ON COLUMN public."ArtSupplierArticles_Tbl"."DateTimeStamp"
     IS 'The DateTimeStamp is the datetime UTC of the last modification.';
 
-COMMENT ON COLUMN public."ArticlesSuppliersArticles_Tbl"."TableHistory"
+COMMENT ON COLUMN public."ArtSupplierArticles_Tbl"."TableHistory"
     IS 'The TableHistory contain then change history of each column.';
 
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Create the comments of the constraint elements
 -- 
-COMMENT ON CONSTRAINT "AsaPk_IDNum" ON public."ArticlesSuppliersArticles_Tbl"
-    IS 'The sequence ArtArticlesSuppliersArticles_Tbl_seq generate the nextval';
+COMMENT ON CONSTRAINT "AsaPk_IDNum" ON public."ArtSupplierArticles_Tbl"
+    IS 'The sequence ArtArtSupplierArticles_Tbl_seq generate the nextval';
 
-COMMENT ON CONSTRAINT "AsaUnique_ID" ON public."ArticlesSuppliersArticles_Tbl"
+COMMENT ON CONSTRAINT "AsaUnique_ID" ON public."ArtSupplierArticles_Tbl"
     IS 'Is the uniqueidentifier';
 
-COMMENT ON CONSTRAINT "AsaUnique_IDArtSupArtBusinessUnit" ON public."ArticlesSuppliersArticles_Tbl"
+COMMENT ON CONSTRAINT "AsaUnique_IDArtSupArtBusinessUnit" ON public."ArtSupplierArticles_Tbl"
     IS 'An articles can be unique for an article supplier for a business unit.';
 
 -- #########################################################################################################################################################################################
 -- Second create the trigger before insert
 --	Step 1: create the function before insert
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- FUNCTION: public.ArticlesSuppliersArticlesBeforeInsert_Tfnc()
-DROP FUNCTION IF EXISTS public."ArticlesSuppliersArticlesBeforeInsert_Tfnc"() CASCADE;
+-- FUNCTION: public.ArtSupplierArticlesBeforeInsert_Tfnc()
+DROP FUNCTION IF EXISTS public."ArtSupplierArticlesBeforeInsert_Tfnc"() CASCADE;
 
-CREATE OR REPLACE FUNCTION public."ArticlesSuppliersArticlesBeforeInsert_Tfnc"()
+CREATE OR REPLACE FUNCTION public."ArtSupplierArticlesBeforeInsert_Tfnc"()
     RETURNS trigger
     LANGUAGE 'plpgsql'
     COST 100
@@ -142,35 +141,35 @@ RETURN NEW;
 END;
 $BODY$;
 
-ALTER FUNCTION public."ArticlesSuppliersArticlesBeforeInsert_Tfnc"()
+ALTER FUNCTION public."ArtSupplierArticlesBeforeInsert_Tfnc"()
     OWNER TO postgres;
 
-COMMENT ON FUNCTION public."ArticlesSuppliersArticlesBeforeInsert_Tfnc"()
+COMMENT ON FUNCTION public."ArtSupplierArticlesBeforeInsert_Tfnc"()
     IS 'Create the function to set de current timestamp for the datecreated field.
-	This funtion is used by the articles supplier articles table before insert trigger.';
+	This funtion is used by the ArtSupplierArticles_Tbl before insert trigger.';
 
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---	Step 2: create the trigger before insert in the ArticlesSuppliersArticles table
--- Trigger: ArticlesSuppliersArticlesBeforeInsert_Trg
-DROP TRIGGER IF EXISTS "ArticlesSuppliersArticlesBeforeInsert_Trg" ON public."ArticlesSuppliersArticles_Tbl" CASCADE;
+--	Step 2: create the trigger before insert in the ArtSupplierArticles table
+-- Trigger: ArtSupplierArticlesBeforeInsert_Trg
+DROP TRIGGER IF EXISTS "ArtSupplierArticlesBeforeInsert_Trg" ON public."ArtSupplierArticles_Tbl" CASCADE;
 
-CREATE TRIGGER "ArticlesSuppliersArticlesBeforeInsert_Trg"
+CREATE TRIGGER "ArtSupplierArticlesBeforeInsert_Trg"
     BEFORE INSERT
-    ON public."ArticlesSuppliersArticles_Tbl"
+    ON public."ArtSupplierArticles_Tbl"
     FOR EACH ROW
-    EXECUTE FUNCTION public."ArticlesSuppliersArticlesBeforeInsert_Tfnc"();
+    EXECUTE FUNCTION public."ArtSupplierArticlesBeforeInsert_Tfnc"();
 
-COMMENT ON TRIGGER "ArticlesSuppliersArticlesBeforeInsert_Trg" ON public."ArticlesSuppliersArticles_Tbl"
-    IS 'Set the ArticlesSuppliersArticlesBeforeInsert_Tfnc function, that makes datetime UTC of the DateCreated field';
+COMMENT ON TRIGGER "ArtSupplierArticlesBeforeInsert_Trg" ON public."ArtSupplierArticles_Tbl"
+    IS 'Set the ArtSupplierArticlesBeforeInsert_Tfnc function, that makes datetime UTC of the DateCreated field';
 
 -- #########################################################################################################################################################################################
 -- Third create the trigger before update
 --	Step 1: create the function before update
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- FUNCTION: public.ArticlesSuppliersArticlesBeforeUpdate_Tfnc()
-DROP FUNCTION IF EXISTS public."ArticlesSuppliersArticlesBeforeUpdate_Tfnc"() CASCADE;
+-- FUNCTION: public.ArtSupplierArticlesBeforeUpdate_Tfnc()
+DROP FUNCTION IF EXISTS public."ArtSupplierArticlesBeforeUpdate_Tfnc"() CASCADE;
 
-CREATE OR REPLACE FUNCTION public."ArticlesSuppliersArticlesBeforeUpdate_Tfnc"()
+CREATE OR REPLACE FUNCTION public."ArtSupplierArticlesBeforeUpdate_Tfnc"()
     RETURNS trigger
     LANGUAGE 'plpgsql'
     COST 100
@@ -216,23 +215,23 @@ BEGIN
 END;
 $BODY$;
 
-ALTER FUNCTION public."ArticlesSuppliersArticlesBeforeUpdate_Tfnc"()
+ALTER FUNCTION public."ArtSupplierArticlesBeforeUpdate_Tfnc"()
     OWNER TO postgres;
 
-COMMENT ON FUNCTION public."ArticlesSuppliersArticlesBeforeUpdate_Tfnc"()
+COMMENT ON FUNCTION public."ArtSupplierArticlesBeforeUpdate_Tfnc"()
     IS 'Create the function to set the new datetimestamp and the history of the record.
-	This funtion is used by the ArticlesSuppliersArticles_Tbl table before update trigger.';
+	This funtion is used by the ArtSupplierArticles_Tbl table before update trigger.';
 
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---	Step 2: create the trigger before update in the ArticlesSuppliersArticles_Tbl table
--- Trigger: ArticlesSuppliersArticlesBeforeUpdate_Trg
-DROP TRIGGER IF EXISTS "ArticlesSuppliersArticlesBeforeUpdate_Trg" ON public."ArticlesSuppliersArticles_Tbl" CASCADE;
+--	Step 2: create the trigger before update in the ArtSupplierArticles_Tbl table
+-- Trigger: ArtSupplierArticlesBeforeUpdate_Trg
+DROP TRIGGER IF EXISTS "ArtSupplierArticlesBeforeUpdate_Trg" ON public."ArtSupplierArticles_Tbl" CASCADE;
 
-CREATE TRIGGER "ArticlesSuppliersArticlesBeforeUpdate_Trg"
+CREATE TRIGGER "ArtSupplierArticlesBeforeUpdate_Trg"
     BEFORE UPDATE 
-    ON public."ArticlesSuppliersArticles_Tbl"
+    ON public."ArtSupplierArticles_Tbl"
     FOR EACH ROW
-    EXECUTE FUNCTION public."ArticlesSuppliersArticlesBeforeUpdate_Tfnc"();
+    EXECUTE FUNCTION public."ArtSupplierArticlesBeforeUpdate_Tfnc"();
 
-COMMENT ON TRIGGER "ArticlesSuppliersArticlesBeforeUpdate_Trg" ON public."ArticlesSuppliersArticles_Tbl"
-    IS 'Set the ArticlesSuppliersArticlesBeforeUpdate_Tfnc function, that makes datetime UTC and the record History.';
+COMMENT ON TRIGGER "ArtSupplierArticlesBeforeUpdate_Trg" ON public."ArtSupplierArticles_Tbl"
+    IS 'Set the ArtSupplierArticlesBeforeUpdate_Tfnc function, that makes datetime UTC and the record History.';
