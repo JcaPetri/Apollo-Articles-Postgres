@@ -4,8 +4,8 @@
 -- This relation can be:
 -- 	Complementary, one product pushes the other to sales.
 --	Substitutes, one product competes with the other to satisfy the same need.
---	etc.
--- The primary/unique key: is SourceArticleIDn + TargetArticleIDn + RelationTypeIDn + BusinessUnitIDn.
+--	Others relations, etc.
+-- The unique key: is SourceArticleIDn + TargetArticleIDn + RelationTypeIDn + BusinessUnitIDn.
 
 -- #########################################################################################################################################################################################
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -63,10 +63,10 @@ ALTER TABLE IF EXISTS public."ArtRelations_Tbl"
 COMMENT ON TABLE public."ArtRelations_Tbl"
     IS 'Contain the relationship between the articles. 
 This relation can be:
-   Complementary, one product pushes the other to sales.
-   Substitutes, one product competes with the other to satisfy the same need.
-   etc.
-The primary/unique key: is SourceArticleIDn + TargetArticleIDn + RelationTypeIDn + BusinessUnitIDn.';
+ 	Complementary, one product pushes the other to sales.
+	Substitutes, one product competes with the other to satisfy the same need.
+	Others relations, etc.
+The unique key: is SourceArticleIDn + TargetArticleIDn + RelationTypeIDn + BusinessUnitIDn.';
 
 COMMENT ON COLUMN public."ArtRelations_Tbl"."IDNum"
     IS 'The IDNum is the autoincrement number';
