@@ -122,10 +122,10 @@ COMMENT ON CONSTRAINT "AgpUnique_IDArticleGeneralBusinessUnit" ON public."ArtGen
 -- Second create the trigger before insert
 --	Step 1: create the function before insert
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- FUNCTION: public.ArticlesGeneralBeforeInsert_Tfnc()
-DROP FUNCTION IF EXISTS public."ArticlesGeneralBeforeInsert_Tfnc"() CASCADE;
+-- FUNCTION: public.ArtGeneralPropertyBeforeInsert_Tfnc()
+DROP FUNCTION IF EXISTS public."ArtGeneralPropertyBeforeInsert_Tfnc"() CASCADE;
 
-CREATE OR REPLACE FUNCTION public."ArticlesGeneralBeforeInsert_Tfnc"()
+CREATE OR REPLACE FUNCTION public."ArtGeneralPropertyBeforeInsert_Tfnc"()
     RETURNS trigger
     LANGUAGE 'plpgsql'
     COST 100
@@ -141,35 +141,35 @@ RETURN NEW;
 END;
 $BODY$;
 
-ALTER FUNCTION public."ArticlesGeneralBeforeInsert_Tfnc"()
+ALTER FUNCTION public."ArtGeneralPropertyBeforeInsert_Tfnc"()
     OWNER TO postgres;
 
-COMMENT ON FUNCTION public."ArticlesGeneralBeforeInsert_Tfnc"()
+COMMENT ON FUNCTION public."ArtGeneralPropertyBeforeInsert_Tfnc"()
     IS 'Create the function to set de current timestamp for the datecreated field.
 	This funtion is used by the ArtGeneralProperties_Tbl table before insert trigger.';
 
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---	Step 2: create the trigger before insert in the ArticlesGeneral table
--- Trigger: ArticlesGeneralBeforeInsert_Trg
-DROP TRIGGER IF EXISTS "ArticlesGeneralBeforeInsert_Trg" ON public."ArtGeneralProperties_Tbl" CASCADE;
+--	Step 2: create the trigger before insert in the ArtGeneralProperties_Tbl
+-- Trigger: ArtGeneralPropertyBeforeInsert_Trg
+DROP TRIGGER IF EXISTS "ArtGeneralPropertyBeforeInsert_Trg" ON public."ArtGeneralProperties_Tbl" CASCADE;
 
-CREATE TRIGGER "ArticlesGeneralBeforeInsert_Trg"
+CREATE TRIGGER "ArtGeneralPropertyBeforeInsert_Trg"
     BEFORE INSERT
     ON public."ArtGeneralProperties_Tbl"
     FOR EACH ROW
-    EXECUTE FUNCTION public."ArticlesGeneralBeforeInsert_Tfnc"();
+    EXECUTE FUNCTION public."ArtGeneralPropertyBeforeInsert_Tfnc"();
 
-COMMENT ON TRIGGER "ArticlesGeneralBeforeInsert_Trg" ON public."ArtGeneralProperties_Tbl"
+COMMENT ON TRIGGER "ArtGeneralPropertyBeforeInsert_Trg" ON public."ArtGeneralProperties_Tbl"
     IS 'Set the datetime UTC of the DateCreated field';
 
 -- #########################################################################################################################################################################################
 -- Third create the trigger before update
 --	Step 1: create the function before update
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- FUNCTION: public.ArticlesGeneralBeforeUpdate_Tfnc()
-DROP FUNCTION IF EXISTS public."ArticlesGeneralBeforeUpdate_Tfnc"() CASCADE;
+-- FUNCTION: public.ArtGeneralPropertyBeforeUpdate_Tfnc()
+DROP FUNCTION IF EXISTS public."ArtGeneralPropertyBeforeUpdate_Tfnc"() CASCADE;
 
-CREATE OR REPLACE FUNCTION public."ArticlesGeneralBeforeUpdate_Tfnc"()
+CREATE OR REPLACE FUNCTION public."ArtGeneralPropertyBeforeUpdate_Tfnc"()
     RETURNS trigger
     LANGUAGE 'plpgsql'
     COST 100
@@ -218,23 +218,23 @@ BEGIN
 END;
 $BODY$;
 
-ALTER FUNCTION public."ArticlesGeneralBeforeUpdate_Tfnc"()
+ALTER FUNCTION public."ArtGeneralPropertyBeforeUpdate_Tfnc"()
     OWNER TO postgres;
 
-COMMENT ON FUNCTION public."ArticlesGeneralBeforeUpdate_Tfnc"()
+COMMENT ON FUNCTION public."ArtGeneralPropertyBeforeUpdate_Tfnc"()
     IS 'Create the function to set the new datetimestamp and the history of the record.
 	This funtion is used by the ArtGeneralProperties_Tbl table before update trigger.';
 
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---	Step 2: create the trigger before update in the ArtGeneralProperties_Tbl table
--- Trigger: ArticlesGeneralBeforeUpdate_Trg
-DROP TRIGGER IF EXISTS "ArticlesGeneralBeforeUpdate_Trg" ON public."ArtGeneralProperties_Tbl" CASCADE;
+--	Step 2: create the trigger before update in the ArtGeneralProperties_Tbl
+-- Trigger: ArtGeneralPropertyBeforeUpdate_Trg
+DROP TRIGGER IF EXISTS "ArtGeneralPropertyBeforeUpdate_Trg" ON public."ArtGeneralProperties_Tbl" CASCADE;
 
-CREATE TRIGGER "ArticlesGeneralBeforeUpdate_Trg"
+CREATE TRIGGER "ArtGeneralPropertyBeforeUpdate_Trg"
     BEFORE UPDATE 
     ON public."ArtGeneralProperties_Tbl"
     FOR EACH ROW
-    EXECUTE FUNCTION public."ArticlesGeneralBeforeUpdate_Tfnc"();
+    EXECUTE FUNCTION public."ArtGeneralPropertyBeforeUpdate_Tfnc"();
 
-COMMENT ON TRIGGER "ArticlesGeneralBeforeUpdate_Trg" ON public."ArtGeneralProperties_Tbl"
+COMMENT ON TRIGGER "ArtGeneralPropertyBeforeUpdate_Trg" ON public."ArtGeneralProperties_Tbl"
     IS 'Set the datetime UTC and the record History.';
