@@ -1,47 +1,46 @@
 -- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
--- Create the ArtGeneralOptionalFields_Tbl table
--- Contains the columns/fields/properties of the ArticlesGeneral_Tbl which are optionals.
--- The primary key: are the union of the columns TableFieldIDn + ArticlesGeneralIDn + BusinessUnitIDn
--- The unique key: are the union of the columns TableFieldIDn + ArticlesGeneralIDn + BusinessUnitIDn
+-- Create the ArtGeneralPropertyOptionalFields_Tbl table
+-- Contains the columns/fields/properties of the ArtGeneralProperties_Tbl which are optionals.
+-- The unique key: are the union of the columns TableFieldIDn + ArtGeneralPropertyIDn + BusinessUnitIDn
+-- In each record you specify the property and the value it assumes for each item.
 
 -- #########################################################################################################################################################################################
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- First create the sequence ArtGeneralOptionalFields_seq
+-- First create the sequence ArtGeneralPropertyOptionalFields_seq
 -- 
-DROP SEQUENCE IF EXISTS public."ArtGeneralOptionalFields_Seq" CASCADE;
+DROP SEQUENCE IF EXISTS public."ArtGeneralPropertyOptionalFields_Seq" CASCADE;
 
-CREATE SEQUENCE public."ArtGeneralOptionalFields_Seq"
+CREATE SEQUENCE public."ArtGeneralPropertyOptionalFields_Seq"
     INCREMENT 1
     START 1
     MINVALUE 1
     MAXVALUE 2147483647
     CACHE 1;
 
-ALTER SEQUENCE public."ArtGeneralOptionalFields_Seq"
+ALTER SEQUENCE public."ArtGeneralPropertyOptionalFields_Seq"
     OWNER TO postgres;
 
-COMMENT ON SEQUENCE public."ArtGeneralOptionalFields_Seq"
-    IS 'The sequence ArtGeneralOptionalFields_seq generate the nextval of the IDNum';
+COMMENT ON SEQUENCE public."ArtGeneralPropertyOptionalFields_Seq"
+    IS 'The sequence ArtGeneralPropertyOptionalFields_seq generate the nextval of the IDNum';
 
 
 -- #########################################################################################################################################################################################
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Second create the ArtGeneralOptionalFields_Tbl table
+-- Second create the ArtGeneralPropertyOptionalFields_Tbl table
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Table: public.ArtGeneralOptionalFields_Tbl
-DROP TABLE IF EXISTS public."ArtGeneralOptionalFields_Tbl" CASCADE;
+-- Table: public.ArtGeneralPropertyOptionalFields_Tbl
+DROP TABLE IF EXISTS public."ArtGeneralPropertyOptionalFields_Tbl" CASCADE;
 
-CREATE TABLE IF NOT EXISTS public."ArtGeneralOptionalFields_Tbl"
+CREATE TABLE IF NOT EXISTS public."ArtGeneralPropertyOptionalFields_Tbl"
 (
-    "IDNum" integer NOT NULL DEFAULT nextval('"ArtGeneralOptionalFields_Seq"'::regclass),
+    "IDNum" integer NOT NULL DEFAULT nextval('"ArtGeneralPropertyOptionalFields_Seq"'::regclass),
     "ID" uuid NOT NULL DEFAULT uuid_generate_v4 (),
     "TableFieldIDn" integer NOT NULL,
-    "ArticleGeneralIDn" integer NOT NULL,
+    "ArtGeneralPropertyIDn" integer NOT NULL,
     "BusinessUnitIDn" integer NOT NULL,
-			-- la clave primaria: es la propiedad (columna) TableFieldIDn + el ArticleGeneralIDn (Tabla) + CompanyIDn
-    "FieldValueIDn" integer,
-    "FieldNumValue" real,
-    "FieldTextValue" character varying(250) COLLATE pg_catalog."default",
+			-- The unique key: are the union of the columns TableFieldIDn + ArtGeneralPropertyIDn + BusinessUnitIDn
+    "FieldValueTypeIDn" integer,
+    "FieldValue" character varying(250) COLLATE pg_catalog."default",
     "StateIDn" smallint NOT NULL,
     "CreatedByIDn" integer NOT NULL,
     "LastModifiedByIDn" integer NOT NULL,
@@ -51,86 +50,85 @@ CREATE TABLE IF NOT EXISTS public."ArtGeneralOptionalFields_Tbl"
     "TableHistory" text COLLATE pg_catalog."default",
     CONSTRAINT "AgofPk_IDNum" PRIMARY KEY ("IDNum"),
     CONSTRAINT "AgofUnique_ID" UNIQUE ("ID"),
-    CONSTRAINT "AgofUnique_IDTblFieldArticleGeneralBusinessUnit" UNIQUE ("TableFieldIDn", "ArticleGeneralIDn", "BusinessUnitIDn")
+    CONSTRAINT "AgofUnique_IDTblFieldArticleGeneralBusinessUnit" UNIQUE ("TableFieldIDn", "ArtGeneralPropertyIDn", "BusinessUnitIDn")
 )
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public."ArtGeneralOptionalFields_Tbl"
+ALTER TABLE IF EXISTS public."ArtGeneralPropertyOptionalFields_Tbl"
     OWNER to postgres;
 
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Create the comments of the table fields elements
 -- 
-COMMENT ON TABLE public."ArtGeneralOptionalFields_Tbl"
-    IS 'Contains the columns/fields/properties of the items which are optionals.
+COMMENT ON TABLE public."ArtGeneralPropertyOptionalFields_Tbl"
+    IS 'Contains the columns/fields/properties of the ArtGeneralProperties_Tbl which are optionals.
+The unique key: are the union of the columns TableFieldIDn + ArtGeneralPropertyIDn + BusinessUnitIDn
 In each record you specify the property and the value it assumes for each item.';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."IDNum"
+COMMENT ON COLUMN public."ArtGeneralPropertyOptionalFields_Tbl"."IDNum"
     IS 'The IDNum is the autoincrement number';
 
-COMMENT ON COLUMN public."ArtDataElement_Tbl"."ID"
+COMMENT ON COLUMN public."ArtGeneralPropertyOptionalFields_Tbl"."ID"
     IS 'The ID is the uniqueidentifier auto generated V4';
 
-COMMENT ON COLUMN public."ArtGeneralOptionalFields_Tbl"."TableFieldIDn"
+COMMENT ON COLUMN public."ArtGeneralPropertyOptionalFields_Tbl"."TableFieldIDn"
     IS 'The TableFieldIDn is the IDNum of the field property. Link with the System database - SysTableFields.';
 
-COMMENT ON COLUMN public."ArtGeneralOptionalFields_Tbl"."ArticleGeneralIDn"
-    IS 'The ArticleGeneralIDn is the IDNum of the general articles Table. Link with the ArticlesGeneral_Tbl table.';
+COMMENT ON COLUMN public."ArtGeneralPropertyOptionalFields_Tbl"."ArtGeneralPropertyIDn"
+    IS 'The ArtGeneralPropertyIDn is the IDNum of the articles general properties. Link with the ArtGeneralProperties_Tbl table.';
 
-COMMENT ON COLUMN public."ArtGeneralOptionalFields_Tbl"."BusinessUnitIDn"
+COMMENT ON COLUMN public."ArtGeneralPropertyOptionalFields_Tbl"."BusinessUnitIDn"
     IS 'The BusinessUnitIDn is the business unit that the general option fields articles belong.';
 
-COMMENT ON COLUMN public."ArtGeneralOptionalFields_Tbl"."FieldValueIDn"
-    IS 'The FieldValueIDn is the IDNum of the property, when its come from the diccionary ArtDataElement.';
+COMMENT ON COLUMN public."ArtGeneralPropertyOptionalFields_Tbl"."FieldValueTypeIDn"
+    IS 'The FieldValueTypeIDn is the IDNum of the type property. Its come from the SysBaseElement.';
 
-COMMENT ON COLUMN public."ArtGeneralOptionalFields_Tbl"."FieldNumValue"
-    IS 'The FieldNumValue is a numeric value of the property.';
+COMMENT ON COLUMN public."ArtGeneralPropertyOptionalFields_Tbl"."FieldValue"
+    IS 'The FieldValue is a numeric/text/etc value of the property, this value is not standar and can´t be multilanguage.
+If the value is an IDNumType, the meaning is in the ArticleOptionalFields_Tbl.';
 
-COMMENT ON COLUMN public."ArtGeneralOptionalFields_Tbl"."FieldTextValue"
-    IS 'The FieldTextValue is a text value of the property, this value is not standar and can´t be multilanguage.';
-
-COMMENT ON COLUMN public."ArtGeneralOptionalFields_Tbl"."StateIDn"
+COMMENT ON COLUMN public."ArtGeneralPropertyOptionalFields_Tbl"."StateIDn"
     IS 'The StatedIDn is the IDNum that define if the record is enable or not.';
 
-COMMENT ON COLUMN public."ArtGeneralOptionalFields_Tbl"."CreatedByIDn"
+COMMENT ON COLUMN public."ArtGeneralPropertyOptionalFields_Tbl"."CreatedByIDn"
     IS 'The CreatedByIDn is the IDNum of the user who created the record.';
 
-COMMENT ON COLUMN public."ArtGeneralOptionalFields_Tbl"."LastModifiedByIDn"
+COMMENT ON COLUMN public."ArtGeneralPropertyOptionalFields_Tbl"."LastModifiedByIDn"
     IS 'The LastModifiedByIDn is the IDNum of the last user who modified the record.';
 
-COMMENT ON COLUMN public."ArtGeneralOptionalFields_Tbl"."OwnerIDn"
+COMMENT ON COLUMN public."ArtGeneralPropertyOptionalFields_Tbl"."OwnerIDn"
     IS 'The OwnerIDn is the IDNum of the record owner.';
 
-COMMENT ON COLUMN public."ArtGeneralOptionalFields_Tbl"."DateCreated"
+COMMENT ON COLUMN public."ArtGeneralPropertyOptionalFields_Tbl"."DateCreated"
     IS 'The DateCreated is the record creation datetime UTC.';
 
-COMMENT ON COLUMN public."ArtGeneralOptionalFields_Tbl"."DateTimeStamp"
+COMMENT ON COLUMN public."ArtGeneralPropertyOptionalFields_Tbl"."DateTimeStamp"
     IS 'The DateTimeStamp is the datetime UTC of the last modification.';
 
-COMMENT ON COLUMN public."ArtGeneralOptionalFields_Tbl"."TableHistory"
+COMMENT ON COLUMN public."ArtGeneralPropertyOptionalFields_Tbl"."TableHistory"
     IS 'The TableHistory contain then change history of each column.';
 
 -- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Create the comments of the constraint elements
 -- 
-COMMENT ON CONSTRAINT "AgofPk_IDNum" ON public."ArtGeneralOptionalFields_Tbl"
-    IS 'The sequence ArtGeneralOptionalFields_seq generate the nextval';
+COMMENT ON CONSTRAINT "AgofPk_IDNum" ON public."ArtGeneralPropertyOptionalFields_Tbl"
+    IS 'The sequence ArtGeneralPropertyOptionalFields_seq generate the nextval';
 
-COMMENT ON CONSTRAINT "AgofUnique_ID" ON public."ArtGeneralOptionalFields_Tbl"
+COMMENT ON CONSTRAINT "AgofUnique_ID" ON public."ArtGeneralPropertyOptionalFields_Tbl"
     IS 'Is the uniqueidentifier';
 
-COMMENT ON CONSTRAINT "AgofUnique_IDTblFieldArticleGeneralBusinessUnit" ON public."ArtGeneralOptionalFields_Tbl"
+COMMENT ON CONSTRAINT "AgofUnique_IDTblFieldArticleGeneralBusinessUnit" ON public."ArtGeneralPropertyOptionalFields_Tbl"
     IS 'An field property can be unique for an article optional field and a business unit.';
 
 -- #########################################################################################################################################################################################
 -- Second create the trigger before insert
 --	Step 1: create the function before insert
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- FUNCTION: public.ArtGeneralOptionalFieldsBeforeInsert_Tfnc()
-DROP FUNCTION IF EXISTS public."ArtGeneralOptionalFieldsBeforeInsert_Tfnc"() CASCADE;
+-- FUNCTION: public.ArtGeneralPropertyOptionalFieldsBeforeInsert_Tfnc()
+DROP FUNCTION IF EXISTS public."ArtGeneralPropertyOptionalFieldsBeforeInsert_Tfnc"() CASCADE;
 
-CREATE OR REPLACE FUNCTION public."ArtGeneralOptionalFieldsBeforeInsert_Tfnc"()
+CREATE OR REPLACE FUNCTION public."ArtGeneralPropertyOptionalFieldsBeforeInsert_Tfnc"()
     RETURNS trigger
     LANGUAGE 'plpgsql'
     COST 100
@@ -146,35 +144,35 @@ RETURN NEW;
 END;
 $BODY$;
 
-ALTER FUNCTION public."ArtGeneralOptionalFieldsBeforeInsert_Tfnc"()
+ALTER FUNCTION public."ArtGeneralPropertyOptionalFieldsBeforeInsert_Tfnc"()
     OWNER TO postgres;
 
-COMMENT ON FUNCTION public."ArtGeneralOptionalFieldsBeforeInsert_Tfnc"()
+COMMENT ON FUNCTION public."ArtGeneralPropertyOptionalFieldsBeforeInsert_Tfnc"()
     IS 'Create the function to set de current timestamp for the datecreated field.
-	This funtion is used by the articles general optional fields table before insert trigger.';
+	This funtion is used by the ArtGeneralPropertyOptionalFields_Tbl before insert trigger.';
 
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---	Step 2: create the trigger before insert in the ArtGeneralOptionalFields table
--- Trigger: ArtGeneralOptionalFieldsBeforeInsert_Trg
-DROP TRIGGER IF EXISTS "ArtGeneralOptionalFieldsBeforeInsert_Trg" ON public."ArtGeneralOptionalFields_Tbl" CASCADE;
+--	Step 2: create the trigger before insert in the ArtGeneralPropertyOptionalFields table
+-- Trigger: ArtGeneralPropertyOptionalFieldsBeforeInsert_Trg
+DROP TRIGGER IF EXISTS "ArtGeneralPropertyOptionalFieldsBeforeInsert_Trg" ON public."ArtGeneralPropertyOptionalFields_Tbl" CASCADE;
 
-CREATE TRIGGER "ArtGeneralOptionalFieldsBeforeInsert_Trg"
+CREATE TRIGGER "ArtGeneralPropertyOptionalFieldsBeforeInsert_Trg"
     BEFORE INSERT
-    ON public."ArtGeneralOptionalFields_Tbl"
+    ON public."ArtGeneralPropertyOptionalFields_Tbl"
     FOR EACH ROW
-    EXECUTE FUNCTION public."ArtGeneralOptionalFieldsBeforeInsert_Tfnc"();
+    EXECUTE FUNCTION public."ArtGeneralPropertyOptionalFieldsBeforeInsert_Tfnc"();
 
-COMMENT ON TRIGGER "ArtGeneralOptionalFieldsBeforeInsert_Trg" ON public."ArtGeneralOptionalFields_Tbl"
-    IS 'Set the ArtGeneralOptionalFieldsBeforeInsert_Tfnc function, that makes datetime UTC of the DateCreated field';
+COMMENT ON TRIGGER "ArtGeneralPropertyOptionalFieldsBeforeInsert_Trg" ON public."ArtGeneralPropertyOptionalFields_Tbl"
+    IS 'Set the ArtGeneralPropertyOptionalFieldsBeforeInsert_Tfnc function, that makes datetime UTC of the DateCreated field';
 
 -- #########################################################################################################################################################################################
 -- Third create the trigger before update
 --	Step 1: create the function before update
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- FUNCTION: public.ArtGeneralOptionalFieldsBeforeUpdate_Tfnc()
-DROP FUNCTION IF EXISTS public."ArtGeneralOptionalFieldsBeforeUpdate_Tfnc"() CASCADE;
+-- FUNCTION: public.ArtGeneralPropertyOptionalFieldsBeforeUpdate_Tfnc()
+DROP FUNCTION IF EXISTS public."ArtGeneralPropertyOptionalFieldsBeforeUpdate_Tfnc"() CASCADE;
 
-CREATE OR REPLACE FUNCTION public."ArtGeneralOptionalFieldsBeforeUpdate_Tfnc"()
+CREATE OR REPLACE FUNCTION public."ArtGeneralPropertyOptionalFieldsBeforeUpdate_Tfnc"()
     RETURNS trigger
     LANGUAGE 'plpgsql'
     COST 100
@@ -197,11 +195,10 @@ BEGIN
 		v_TableHistoryOld := OLD."TableHistory";
 		v_TableHistory = '';
 		IF NEW."TableFieldIDn" <> OLD."TableFieldIDn" THEN v_TableHistory := OLD."TableFieldIDn"; ELSE v_TableHistory := '†'; END IF;
-		IF NEW."ArticleGeneralIDn" <> OLD."ArticleGeneralIDn" THEN v_TableHistory := OLD."ArticleGeneralIDn"; ELSE v_TableHistory := '†'; END IF;
+		IF NEW."ArtGeneralPropertyIDn" <> OLD."ArtGeneralPropertyIDn" THEN v_TableHistory := OLD."ArtGeneralPropertyIDn"; ELSE v_TableHistory := '†'; END IF;
 		IF NEW."BusinessUnitIDn" <> OLD."BusinessUnitIDn" THEN v_TableHistory := OLD."BusinessUnitIDn"; ELSE v_TableHistory := '†'; END IF;
-		IF NEW."FieldValueIDn" <> OLD."FieldValueIDn" THEN v_TableHistory := OLD."FieldValueIDn"; ELSE v_TableHistory := '†'; END IF;
-		IF NEW."FieldNumValue" <> OLD."FieldNumValue" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."FieldNumValue"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
-		IF NEW."FieldTextValue" <> OLD."FieldTextValue" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."FieldTextValue"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
+		IF NEW."FieldValueTypeIDn" <> OLD."FieldValueTypeIDn" THEN v_TableHistory := OLD."FieldValueTypeIDn"; ELSE v_TableHistory := '†'; END IF;
+		IF NEW."FieldValue" <> OLD."FieldValue" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."FieldValue"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
 		IF NEW."StateIDn" <> OLD."StateIDn" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."StateIDn"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
 		IF NEW."CreatedByIDn" <> OLD."CreatedByIDn" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."CreatedByIDn"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
 		IF NEW."LastModifiedByIDn" <> OLD."LastModifiedByIDn" THEN v_TableHistory := CONCAT(v_TableHistory,'†',OLD."LastModifiedByIDn"); ELSE v_TableHistory := CONCAT(v_TableHistory,'†'); END IF;
@@ -219,23 +216,23 @@ BEGIN
 END;
 $BODY$;
 
-ALTER FUNCTION public."ArtGeneralOptionalFieldsBeforeUpdate_Tfnc"()
+ALTER FUNCTION public."ArtGeneralPropertyOptionalFieldsBeforeUpdate_Tfnc"()
     OWNER TO postgres;
 
-COMMENT ON FUNCTION public."ArtGeneralOptionalFieldsBeforeUpdate_Tfnc"()
+COMMENT ON FUNCTION public."ArtGeneralPropertyOptionalFieldsBeforeUpdate_Tfnc"()
     IS 'Create the function to set the new datetimestamp and the history of the record.
-	This funtion is used by the ArtGeneralOptionalFields_Tbl table before update trigger.';
+	This funtion is used by the ArtGeneralPropertyOptionalFields_Tbl table before update trigger.';
 
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---	Step 2: create the trigger before update in the ArtGeneralOptionalFields_Tbl table
--- Trigger: ArtGeneralOptionalFieldsBeforeUpdate_Trg
-DROP TRIGGER IF EXISTS "ArtGeneralOptionalFieldsBeforeUpdate_Trg" ON public."ArtGeneralOptionalFields_Tbl" CASCADE;
+--	Step 2: create the trigger before update in the ArtGeneralPropertyOptionalFields_Tbl table
+-- Trigger: ArtGeneralPropertyOptionalFieldsBeforeUpdate_Trg
+DROP TRIGGER IF EXISTS "ArtGeneralPropertyOptionalFieldsBeforeUpdate_Trg" ON public."ArtGeneralPropertyOptionalFields_Tbl" CASCADE;
 
-CREATE TRIGGER "ArtGeneralOptionalFieldsBeforeUpdate_Trg"
+CREATE TRIGGER "ArtGeneralPropertyOptionalFieldsBeforeUpdate_Trg"
     BEFORE UPDATE 
-    ON public."ArtGeneralOptionalFields_Tbl"
+    ON public."ArtGeneralPropertyOptionalFields_Tbl"
     FOR EACH ROW
-    EXECUTE FUNCTION public."ArtGeneralOptionalFieldsBeforeUpdate_Tfnc"();
+    EXECUTE FUNCTION public."ArtGeneralPropertyOptionalFieldsBeforeUpdate_Tfnc"();
 
-COMMENT ON TRIGGER "ArtGeneralOptionalFieldsBeforeUpdate_Trg" ON public."ArtGeneralOptionalFields_Tbl"
-    IS 'Set the ArtGeneralOptionalFieldsBeforeUpdate_Tfnc function, that makes datetime UTC and the record History.';
+COMMENT ON TRIGGER "ArtGeneralPropertyOptionalFieldsBeforeUpdate_Trg" ON public."ArtGeneralPropertyOptionalFields_Tbl"
+    IS 'Set the ArtGeneralPropertyOptionalFieldsBeforeUpdate_Tfnc function, that makes datetime UTC and the record History.';
