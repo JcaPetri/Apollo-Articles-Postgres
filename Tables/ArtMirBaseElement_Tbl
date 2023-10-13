@@ -2,18 +2,11 @@
 -- Create the ArtMirBaseElement_Tbl table
 /* 
 It is the dictionary of the System BaseElement_Tbl module.
-Each record is generated in the System database. The ArtMirBaseElement_Tbl is a mirror of the SysBaseElement_Tbl.
-The ID (uniqueidentifier) ​​and IDNum (unique autonumerical value) are generated in thiers table.
-In order for the same IDName word to have different meanings depending on its use, it is defined for a Scope, BusinessUnit and Language.
-To respect all the rules the unique value must be the combination of: Name/Scope/BusinessUnit/Language.
-is unique for a:
-  Name     -> is the code readable by the user
-  Scope     -> the Name must be unique for the application Scope, usually a Table.
-  BusinessUnit -> the Name must be unique for the BusinessUnit.
-  Language -> the Name must be unique for Language. This dictionary has a default language defined.
-Important: the object exits when it is created in the respective table, that it is created in the dictionary does not affect the system.
-Example: the pampa article is created in the dictionary, but it does not exist until it is created in the Articles table.
-The Scope and BusinessUnit combination can be the Kafka/rabbitMq topic.
+Each record is generated in the System database. 
+ArtMirBaseElement_Tbl is a mirror of SysBaseElement_Tbl, but in this mirror we only have the records used by the article database.
+Tips:
+    The ID (uniqueidentifier) ​​and IDNum (unique autonumerical value) are generated in thiers table.
+    We only update the record that are already created in this database.
 */
 
 
