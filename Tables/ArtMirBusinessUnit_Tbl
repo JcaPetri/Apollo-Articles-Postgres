@@ -2,9 +2,11 @@
 -- Create the ArtMirBusinessUnit_Tbl table
 /* 
 It is the Business Unit of the System BusinessUnit_Tbl module.
-Each record is generated in the System database. The ArtMirBusinessUnit_Tbl is a mirror of the SysBusinessUnit_Tbl.
-The Business Unit is the minimal unit of a Company. Within a company there may be several business units.
-The Scope and BusinessUnit combination can be the Kafka/rabbitMq topic.
+Each record is generated in the System database. 
+ArtMirBusinessUnit_Tbl is a mirror of SysBusinessUnit_Tbl, but in this mirror we only have the records used by the article database.
+Tips:
+    The Business Unit is the minimal unit of a Company. Within a company there may be several business units.
+    The Scope and BusinessUnit combination can be the Kafka/rabbitMq topic.
 */
 
 -- #########################################################################################################################################################################################
